@@ -1,0 +1,14 @@
+/* Game Controls Menu (Bottom) */
+.game-container .controls {
+    display: flex;
+    flex-direction: row;
+    height: 100px;
+}
+
+.controls .button {
+    flex: auto;
+    color: white;
+    text-align: center;
+    background-color: black;
+    cursor: pointer;
+}

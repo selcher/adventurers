@@ -1,0 +1,130 @@
+/* Game Status Menu */
+.game-container .status {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    color: white;
+    background-color: rgba(0, 0, 0, 1);
+}
+
+.player-status {
+    display: flex;
+    flex: auto;
+}
+
+.player-status .avatar {
+    width: 100px;
+    height: auto;
+    background-color: transparent;
+    background-position: -70px -60px;
+}
+
+.player-status .info {
+    display: flex;
+    flex-direction: column;
+    flex: auto;
+    margin: 1px;
+    padding: 0;
+    color: #000;
+    font-weight: bold;
+    font-family: sans-serif;
+    background-color: #fff;
+    border-radius: 4px;
+}
+
+.player-status .info .name {
+    padding: 4px;
+    background: rgb(226,226,226); /* Old browsers */
+    background: -moz-linear-gradient(top,  rgba(226,226,226,1) 0%, rgba(219,219,219,1) 50%, rgba(209,209,209,1) 51%, rgba(254,254,254,1) 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top,  rgba(226,226,226,1) 0%,rgba(219,219,219,1) 50%,rgba(209,209,209,1) 51%,rgba(254,254,254,1) 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom,  rgba(226,226,226,1) 0%,rgba(219,219,219,1) 50%,rgba(209,209,209,1) 51%,rgba(254,254,254,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e2e2e2', endColorstr='#fefefe',GradientType=0 ); /* IE6-9 */
+}
+
+.player-status .info .basic {
+    display: flex;
+    flex: auto;
+    overflow: hidden;
+}
+
+.player-status .info .basic .level {
+    flex: 0 1 50%;
+    padding: 4px;
+}
+
+.player-status .info .basic .level .exp {
+    position: relative;
+}
+
+.player-status .info .basic .level .exp .current {
+    height: 4px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    background-color: #3F51B5;
+    border: 1px solid #9E9E9E;
+    box-sizing: border-box;
+}
+
+.player-status .info .basic .level .exp .max {
+    width: 100%;
+    height: 4px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    background-color: #CECECE;
+    border: 1px solid #9E9E9E;
+    box-sizing: border-box;
+}
+
+.player-status .info .basic .level .exp .label {
+    padding-top: 5px;
+    color: #6495ED;
+    font-size: 10px;
+    text-align: right;
+}
+
+.player-status .info .basic .level .level-up {
+    width: 24px;
+    height: 24px;
+    text-align: center;
+    line-height: 30px;
+    background: transparent url('../assets/icons/lvl_out.gif');
+}
+
+.player-status .info .basic .level .level-up:active {
+    background: transparent url('../assets/icons/lvl_over.gif');
+}
+
+.player-status .info .basic .level .level-up.hide {
+    display: none;
+}
+
+.player-status .info .basic .stats {
+    flex: 0 1 50%;
+    padding: 4px;
+}
+
+.player-status .info .basic .stats .stat {
+    display: flex;
+    border-bottom: 1px solid #000;
+}
+
+.player-status .info .basic .stats .stat .label {
+    flex: auto;
+}
+
+.player-status .info .basic .stats .stat .value {
+    flex: auto;
+    text-align: right;
+}

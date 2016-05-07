@@ -1,0 +1,76 @@
+/* Game Stage */
+.game-container .stage {
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.stage-players,
+.stage-enemies {
+    display: flex;
+    flex-direction: column;
+    flex: 0 1 50%;
+}
+
+.player-avatar {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    flex: auto;
+}
+
+.player-avatar .info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+.player-avatar .info .hp {
+    position: relative;
+    width: 100px;
+    height: 5px;
+    margin: auto;
+}
+
+.player-avatar .info .hp .current {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: #7FFF00;
+}
+
+.player-avatar .info .hp .max {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #008000;
+    opacity: 0.2;
+}
+
+.player-avatar .avatar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin: auto;
+    background-color: transparent;
+    background-position: 50% 50%;
+    background-size: initial;
+    background-repeat: no-repeat;
+}
+
+/* Locations */
+.stage .poring_field {
+    background: url('../assets/stage/poring_field.jpg');
+}

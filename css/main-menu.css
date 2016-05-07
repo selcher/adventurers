@@ -1,0 +1,63 @@
+.main-menu {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #FFF;
+}
+
+.main-menu .main-menu-label {
+    flex: 0 1 60%;
+    padding-top: 50%;
+    box-sizing: border-box;
+    color: #456DB5;
+    text-align: center;
+}
+
+.main-menu .main-menu-label .header {
+
+}
+
+.main-menu .main-menu-label .sub-header {
+    width: 150px;
+    margin: auto;
+    padding: 5px;
+    border-color: #456DB5;
+    border-top: 5px solid #456DB5;
+    border-bottom: 5px solid #456DB5;
+}
+
+.main-menu .button-container {
+    flex: 0 1 40%;
+}
+
+.main-menu .button-container .button {
+    width: 150px;
+    margin: 5px auto;
+    padding: 4px 0;
+    color: #6495ED;
+    text-align: center;
+    border-top: 2px solid transparent;
+    border-bottom: 2px solid transparent;
+}
+
+.main-menu .button-container .button:hover {
+    background-color: #F0F8FF;
+    border-color: #456DB5;
+    cursor: pointer;
+}
+
+.main-menu .button-container .new-game-button {
+
+}
+
+.main-menu .button-container .continue-button {
+
+}
+
+.main-menu .button-container .credits-button {
+
+}

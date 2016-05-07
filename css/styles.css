@@ -1,0 +1,26 @@
+/* Common */
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    height: 100%;
+    flex: auto;
+}
+
+.hide {
+    display: none !important;
+}

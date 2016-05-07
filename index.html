@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE-edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Game - Auto RPG</title>
+
+        <link type="text/css" rel="stylesheet" href="css/styles.css">
+        <link type="text/css" rel="stylesheet" href="css/container.css">
+        <link type="text/css" rel="stylesheet" href="css/main-menu.css">
+        <link type="text/css" rel="stylesheet" href="css/menu-top.css">
+        <link type="text/css" rel="stylesheet" href="css/menu-bottom.css">
+        <link type="text/css" rel="stylesheet" href="css/map.css">
+        <link type="text/css" rel="stylesheet" href="css/status.css">
+        <link type="text/css" rel="stylesheet" href="css/stage.css">
+        <link type="text/css" rel="stylesheet" href="css/players.css">
+        <link type="text/css" rel="stylesheet" href="css/enemies.css">
+
+    </head>
+
+    <body>
+
+        <div class="content">
+
+            <div class="game-container">
+                <div class="main-menu"></div>
+                <div class="top-menu"></div>
+                <div class="content"></div>
+                <div class="controls"></div>
+            </div>
+
+        </div>
+
+        <!-- External scripts -->
+        <script src="js/vendor/jquery-2.2.3.min.js"></script>
+
+        <!-- App scripts -->
+        <script src="js/utils.js"></script>
+
+        <script src="js/data.js"></script>
+
+        <script src="js/player-render.js"></script>
+        <script src="js/player.js"></script>
+
+        <script src="js/enemy-render.js"></script>
+        <script src="js/enemy.js"></script>
+
+        <script src="js/top-menu.js"></script>
+        <script src="js/status-menu.js"></script>
+        <script src="js/map-menu.js"></script>
+
+        <script src="js/stage.js"></script>
+        <script src="js/battle.js"></script>
+
+        <script src="js/content.js"></script>
+        <script src="js/api.js"></script>
+        <script src="js/controls.js"></script>
+        <script src="js/main-menu.js"></script>
+
+        <script>
+            // Game Initialize:
+            // 1. Load Game Data
+            // 2. Initialize Players
+            // 3. Start Battle
+            window.dataApi.loadData(function() {
+
+                // top menu
+                var topMenu = document.querySelector( ".top-menu" );
+                window.topMenuApi.init( topMenu ).render().hide();
+
+                // content
+                var content = document.querySelector( ".game-container .content" );
+                window.contentApi.init( content ).render().hide();
+
+                // controls
+                var controls = document.querySelector(".controls");
+                window.controlsApi.init( controls ).render().show();
+
+                // locations
+                window.gameApi.locations = window.dataApi.getLocations();
+
+                // players
+                var playerList = window.gameApi.createPlayers(
+                    window.dataApi.getPlayers()
+                );
+                window.gameApi.setPlayers( playerList );
+
+                // experience
+                window.gameApi.setExperience(
+                    window.dataApi.getExperience()
+                );
+
+                // zeny
+                window.gameApi.setZeny(
+                    window.dataApi.getZeny()
+                );
+
+                // Save Game Data on page close / refresh
+                // window.addEventListener( "beforeunload", function( e ) {
+                //     window.dataApi.saveData({
+                //         "player": window.gameApi.players,
+                //         "experience": window.gameApi.experience,
+                //         "zeny": window.gameApi.zeny,
+                //         "map": window.gameApi.map
+                //     });
+                // }, false );
+
+                // TODO:
+                // Show start menu:
+                // - new game
+                // - continue
+                // - options
+                // - credits
+                var mainMenu = document.querySelector( ".main-menu" );
+                window.mainMenuApi.init( mainMenu ).render().show();
+            });
+        </script>
+
+    </body>
+</html>

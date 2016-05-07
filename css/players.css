@@ -1,0 +1,48 @@
+/* Players */
+.player-Luna .avatar {
+    background-image: url("../assets/character/swordsman.png");
+}
+
+.player-Arc .avatar {
+    background-image: url("../assets/character/archer.png");
+}
+
+.player-Mag .avatar {
+    background-image: url("../assets/character/mage.png");
+}
+
+.player-Aco .avatar {
+    background-image: url("../assets/character/healer.png");
+}
+
+/* Status */
+.player-avatar .avatar.regen {
+    opacity: 0.2;
+}
+
+@keyframes attack { /* CSS3 */
+	0%   { -webkit-transform: translateX(0px); }
+	40%   { -webkit-transform: translateX(0px); }
+	50%  { -webkit-transform: translateX(20px); }
+	60%  { -webkit-transform: translateX(0px); }
+	100% { -webkit-transform: translateX(0px); }
+}
+@-moz-keyframes attack { /* Firefox */
+    0%   { -webkit-transform: translateX(0px); }
+	40%   { -webkit-transform: translateX(0px); }
+	50%  { -webkit-transform: translateX(20px); }
+	60%  { -webkit-transform: translateX(0px); }
+	100% { -webkit-transform: translateX(0px); }
+}
+@-webkit-keyframes attack { /* Webkit */
+    0%   { -webkit-transform: translateX(0px); }
+	40%   { -webkit-transform: translateX(0px); }
+	50%  { -webkit-transform: translateX(20px); }
+	60%  { -webkit-transform: translateX(0px); }
+	100% { -webkit-transform: translateX(0px); }
+}
+.player-avatar .attack {
+	animation:         attack 1s infinite; /* CSS3 */
+	-moz-animation:    attack 1s infinite; /* Firefox */
+	-webkit-animation: attack 1s infinite; /* Webkit */
+}

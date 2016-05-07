@@ -1,0 +1,23 @@
+/* Game Top Menu */
+.top-menu {
+    display: flex;
+    flex-direction: row;
+    padding: 2px;
+    color: white;
+    background-color: black;
+}
+
+.top-menu .experience,
+.top-menu .zeny {
+    flex: auto;
+    padding-left: 26px;
+    line-height: 26px;
+}
+
+.top-menu .experience {
+    background: #000 url('../assets/icons/exp.gif') no-repeat;
+}
+
+.top-menu .zeny {
+    background: #000 url('../assets/icons/zeny.gif') no-repeat;
+}
