@@ -15,7 +15,7 @@
     var mapDataUrl = "js/map-data.js";
     var enemyDataUrl = "js/enemy-data.js";
 
-    var defaultExperience = 100000;
+    var defaultExperience = 0;
     var defaultZeny = 0;
 
 
