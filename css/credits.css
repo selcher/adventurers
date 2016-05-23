@@ -1,0 +1,32 @@
+.credits {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: #F0F8FF;
+}
+
+.credits .info {
+    flex: 0 1 90%;
+    margin: auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.credits .back-button {
+    flex: 0 1 10%;
+    width: 100%;
+    margin: auto;
+    padding: 10px;
+    box-sizing: border-box;
+    background: #000;
+    color: #6495ED;
+    text-align: center;
+}
+
+.credits .back-button:hover {
+    cursor: pointer;
+}
