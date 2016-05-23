@@ -1,7 +1,9 @@
 /* Game Container */
 .game-container {
     width: 100%;
+    max-width: 400px;
     height: 100%;
+    margin: auto;
     position: relative;
     display: flex;
     flex-direction: column;

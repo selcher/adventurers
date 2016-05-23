@@ -71,6 +71,10 @@
 }
 
 /* Locations */
-.stage .poring_field {
-    background: url('../assets/stage/poring_field.jpg');
+.stage.poring_field {
+    background-color: #F0F8FF;
+}
+
+.stage.poring_field2 {
+    background-color: #FAEBD7;
 }

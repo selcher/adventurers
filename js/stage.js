@@ -2,8 +2,27 @@
 
 (function( w ) {
 
+    /**
+     * Private variables
+     */
     var container = null;
 
+
+    /**
+     * Public api
+     */
+    w.stageApi = {
+        "init": init,
+        "render": render,
+        "show": show,
+        "hide": hide,
+        "add": add
+    };
+
+
+    /**
+     * Private methods
+     */
     function init( element ) {
         container = element;
     }
@@ -30,16 +49,5 @@
     function add( element ) {
         container.appendChild( element );
     }
-
-    var api = {
-        "init": init,
-        "render": render,
-        "show": show,
-        "hide": hide,
-        "add": add
-    };
-
-    // Attach to global namespace
-    w.stageApi = api;
 
 })( window );

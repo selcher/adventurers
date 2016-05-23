@@ -2,8 +2,28 @@
 
 (function( w ) {
 
+    /**
+     * Private variables
+     */
     var container = null;
+    var actions = {};
 
+
+    /**
+     * Public api
+     */
+    w.mapMenuApi = {
+        "init": init,
+        "setActions": setActions,
+        "render": render,
+        "show": show,
+        "hide": hide
+    };
+
+
+    /**
+     * Private methods
+     */
     function init( element ) {
 
         container = element;
@@ -16,8 +36,8 @@
 
         if ( target.classList.contains( "location" ) ) {
 
-            var locationName = target.getAttribute( "data-name" );
-            actions.onLocationSelected( locationName );
+            var locationId = target.getAttribute( "data-name" );
+            actions.onLocationSelected( locationId );
 
             hide();
 
@@ -25,8 +45,6 @@
             return false;
         }
     }
-
-    var actions = {};
 
     function setActions( gameActions ) {
         actions = gameActions;
@@ -46,12 +64,12 @@
                 classStyle = [
                     "location",
                     location.locked ? "locked" : "unlocked",
-                    location.name,
+                    location.id,
                 ].join( " " );
 
                 content += '<div ' +
                     'class="' + classStyle + '" ' +
-                    'data-name="' + location.name + '">' +
+                    'data-name="' + location.id + '">' +
                     '</div>';
 
             }
@@ -67,16 +85,5 @@
     function hide() {
         container.classList.add( "hide" );
     }
-
-    var api = {
-        "init": init,
-        "setActions": setActions,
-        "render": render,
-        "show": show,
-        "hide": hide
-    };
-
-    // Attach to global namespace
-    w.mapMenuApi = api;
 
 })( window );

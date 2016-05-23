@@ -1,10 +1,28 @@
 (function ( w, doc, stage, map, statusMenu ) {
 
+    /**
+     * Private variables
+     */
+    var container = null;
+
+
+    /**
+     * Public api
+     */
+    window.contentApi = {
+        "init": init,
+        "render": render,
+        "show": show,
+        "hide": hide
+    };
+
+
+    /**
+     * Private methods
+     */
     function renderContent( element, content ) {
         element.innerHTML = content;
     };
-
-    var container = null;
 
     function init( element ) {
 
@@ -38,13 +56,6 @@
     function hide() {
         container.classList.add( "hide" );
     }
-
-    window.contentApi = {
-        "init": init,
-        "render": render,
-        "show": show,
-        "hide": hide
-    };
 
 })( window,
     document,

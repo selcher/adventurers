@@ -1,11 +1,21 @@
-(function( w, doc ) {
+// Utils Api
 
-    var floor = Math.floor;
-    var random = Math.random;
+(function( w, doc, ObjectApi, MathApi, JSONApi ) {
+
+    var floor = MathApi.floor;
+    var random = MathApi.random;
 
     w.utilsApi = {
 
-        // Util
+        // list and objects
+        "getKeys": function getKeys( obj ) {
+            return ObjectApi.keys( obj );
+        },
+        "each": function each( list, callback, context ) {
+            for ( var i = 0, length = list.length; i < length; i++ ) {
+                callback && callback.call( context || null, list[ i ], i );
+            }
+        },
         "getRandom": function getRandom( list ) {
             return floor( random() * list.length );
         },
@@ -20,7 +30,7 @@
                 pick = list[ pickIndex ];
 
                 if ( !pick.isAlive() &&
-                    Object.keys( picks ).length !== total ) {
+                    this.getKeys( picks ).length !== total ) {
                     picks[ pickIndex ] = null;
                     pick = null;
                 }
@@ -28,6 +38,16 @@
 
             return pick;
         },
+
+        // JSON
+        "parse": function parse( text ) {
+            return JSONApi.parse( text );
+        },
+        "toString": function toString( json ) {
+            return JSONApi.stringify( json );
+        },
+
+        // UI
         "createElement": function createElement( tag, className ) {
 
             var container = doc.createElement( tag );
@@ -41,4 +61,4 @@
 
     };
 
-})( window, document );
+})( window, document, Object, Math, JSON );

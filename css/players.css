@@ -1,23 +1,52 @@
 /* Players */
-.player-Luna .avatar {
+.Luna {
     background-image: url("../assets/character/swordsman.png");
 }
 
-.player-Arc .avatar {
+.Arc {
     background-image: url("../assets/character/archer.png");
 }
 
-.player-Mag .avatar {
+.Mag {
     background-image: url("../assets/character/mage.png");
 }
 
-.player-Aco .avatar {
+.Aco {
     background-image: url("../assets/character/healer.png");
 }
 
 /* Status */
+/*.player-avatar .avatar.attacked {*/
+.player-avatar .avatar.attacked {
+    filter: hue-rotate(300deg);
+    -webkit-filter: hue-rotate(300deg);
+    animation: attacked 0.4s cubic-bezier(.36,.07,.19,.97) both;
+    -moz-animation: attacked 0.4s cubic-bezier(.36,.07,.19,.97) both;
+    -webkit-animation: attacked 0.4s cubic-bezier(.36,.07,.19,.97) both;
+}
+.player-avatar .avatar.attacking {
+    filter: hue-rotate(390deg);
+    -webkit-filter: hue-rotate(390deg);
+}
+.player-avatar .avatar.dead {
+    filter: hue-rotate(45deg);
+    -webkit-filter: hue-rotate(45deg);
+}
 .player-avatar .avatar.regen {
     opacity: 0.2;
+    filter: blur(1px);
+    -webkit-filter: blur(1px);
+}
+.player-avatar .avatar.alive {
+    filter: hue-rotate(390deg);
+    -webkit-filter: hue-rotate(390deg);
+}
+
+@keyframes attacked { /* CSS3 */
+	10%, 90%       { -webkit-transform: translateX(-2px); }
+	20%, 80%       { -webkit-transform: translateX(2px); }
+	30%, 50%, 70%  { -webkit-transform: translateX(-8px); }
+	40%, 60%       { -webkit-transform: translateX(8px); }
 }
 
 @keyframes attack { /* CSS3 */

@@ -1,7 +1,7 @@
 .main-menu {
     display: flex;
     flex-direction: column;
-    position: fixed;
+    position: absolute;
     top: 0;
     bottom: 0;
     left: 0;
@@ -11,20 +11,22 @@
 
 .main-menu .main-menu-label {
     flex: 0 1 60%;
-    padding-top: 50%;
-    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
     color: #456DB5;
     text-align: center;
 }
 
 .main-menu .main-menu-label .header {
-
+    margin: auto auto 0 auto;
+    letter-spacing: 2px;
 }
 
 .main-menu .main-menu-label .sub-header {
     width: 150px;
-    margin: auto;
+    margin: 0 auto auto auto;
     padding: 5px;
+    letter-spacing: 4px;
     border-color: #456DB5;
     border-top: 5px solid #456DB5;
     border-bottom: 5px solid #456DB5;

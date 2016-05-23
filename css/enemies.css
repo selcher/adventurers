@@ -6,32 +6,32 @@
 }
 
 /* Poring Field */
-.player-Poring .avatar {
+.Poring.avatar {
     background-image: url("../assets/enemy/poring.gif");
     background-size: 41px 39px;
     background-position: 50% 80%;
 }
 
-.player-Drops .avatar {
+.Drops.avatar {
     background-image: url("../assets/enemy/drops.gif");
     background-size: 40px 38px;
     background-position: 50% 80%;
 }
 
-.player-Poporing .avatar {
+.Poporing.avatar {
     background-image: url("../assets/enemy/poporing.gif");
     background-size: 41px 39px;
     background-position: 50% 80%;
 }
 
-.player-Marine .avatar {
+.Marine.avatar {
     background-image: url("../assets/enemy/marine.gif");
     background-size: 47px 46px;
     background-position: 50% 80%;
 }
 
 /* Poring Field - Boss */
-.player-Poring_King .avatar {
+.Poring_King.avatar {
     background-image: url("../assets/enemy/poring_king.gif");
     background-position: 50% 50%;
     background-size: 130px 130px;
@@ -39,32 +39,32 @@
 }
 
 /* Poring Field 2 */
-.player-Fabre .avatar {
+.Fabre.avatar {
     background-image: url("../assets/enemy/fabre.gif");
     background-size: 36px 29px;
     background-position: 50% 80%;
 }
 
-.player-Lunatic .avatar {
+.Lunatic.avatar {
     background-image: url("../assets/enemy/lunatic.gif");
     background-size: 35px 28px;
     background-position: 50% 80%;
 }
 
-.player-Rodra .avatar {
+.Rodra.avatar {
     background-image: url("../assets/enemy/rodra.gif");
     background-size: 46px 55px;
     background-position: 50% 80%;
 }
 
-.player-Rocker .avatar {
+.Rocker.avatar {
     background-image: url("../assets/enemy/Rocker.gif");
     background-size: 51px 95px;
     background-position: 50% 80%;
 }
 
 /* Poring Field 2 - Boss */
-.player-Eclipse .avatar {
+.Eclipse.avatar {
     background-image: url("../assets/enemy/eclipse.gif");
     background-position: 50% 50%;
     background-size: 130px 130px;

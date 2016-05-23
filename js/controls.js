@@ -1,7 +1,10 @@
 // Game controls
 
-(function( w, game, topMenu, mapMenu, stage, statusMenu ) {
+(function( w, game, mapRegistry, topMenu, mapMenu, stage, statusMenu ) {
 
+    /**
+     * Private Variables
+     */
     var container = null;
     var controls = {
         "map": {
@@ -21,6 +24,23 @@
         }
     };
 
+
+    /**
+     * Public api
+     */
+    w.controlsApi = {
+        "init": init,
+        "render": render,
+        "show": show,
+        "hide": hide,
+
+        "clickMap": onClickMap
+    };
+
+
+    /**
+     * Private methods
+     */
     function init( element ) {
 
         container = element;
@@ -28,6 +48,7 @@
 
         return this;
     }
+
 
     function onClickControls( e ) {
 
@@ -47,6 +68,7 @@
         }
     }
 
+
     function onClickMap() {
 
         game.stopBattle();
@@ -62,21 +84,31 @@
         );
     }
 
+
     function showMap() {
 
         mapMenu.setActions({
-            onLocationSelected: function( locationName ) {
-                topMenu.render( game.experience, game.zeny ).show();
-                stage.render( locationName ).show();
-                game.setLocation( locationName );
-                game.startBattle( "normal", locationName,
+            onLocationSelected: function( locationId ) {
+                showTopMenu();
+                stage.render( locationId ).show();
+                game.setLocation( locationId );
+                game.startBattle( "normal", locationId,
                     function battleDone() {} );
             }
         });
 
-        mapMenu.render( game.locations );
+        mapMenu.render( mapRegistry.getLocations() );
         mapMenu.show();
     }
+
+
+    function showTopMenu() {
+        topMenu.render(
+            game.getExperience(),
+            game.getZeny()
+        ).show();
+    }
+
 
     function onClickStatus() {
 
@@ -84,7 +116,7 @@
 
         setTimeout(
             function () {
-                topMenu.render( game.experience, game.zeny ).show();
+                showTopMenu();
                 showStatusMenu();
                 mapMenu.hide();
                 stage.hide();
@@ -93,15 +125,17 @@
         );
     }
 
+
     function showStatusMenu() {
 
         statusMenu.setActions({
             "levelUp": game.levelUp.bind( game )
         });
 
-        statusMenu.render( game.players, game.experience );
+        statusMenu.render( game.getPlayers(), game.getExperience() );
         statusMenu.show();
     }
+
 
     function onClickBoss() {
 
@@ -113,15 +147,19 @@
         }
 
         setTimeout( function() {
-            topMenu.render( game.experience, game.zeny ).show();
-            stage.render( game.map ).show();
+            var currentLocation = game.getLocation();
+            var locationId = currentLocation.id;
+
+            showTopMenu();
+            stage.render( locationId ).show();
             statusMenu.hide();
             mapMenu.hide();
             hide();
 
-            game.startBattle( "boss", game.map, battleDone );
+            game.startBattle( "boss", locationId, battleDone );
         }, 100 );
     }
+
 
     function render() {
 
@@ -141,26 +179,21 @@
         return this;
     }
 
+
     function show() {
         container.classList.remove( "hide" );
     }
+
 
     function hide() {
         container.classList.add( "hide" );
     }
 
-    w.controlsApi = {
-        "init": init,
-        "render": render,
-        "show": show,
-        "hide": hide,
-
-        "clickMap": onClickMap
-    };
-
-})(window,
+})( window,
     window.gameApi,
+    window.mapRegistryApi,
     window.topMenuApi,
     window.mapMenuApi,
     window.stageApi,
-    window.statusMenuApi);
+    window.statusMenuApi
+);

@@ -19,6 +19,7 @@ body {
 .content {
     height: 100%;
     flex: auto;
+    background-color: #75511D;
 }
 
 .hide {

@@ -128,3 +128,69 @@
     flex: auto;
     text-align: right;
 }
+
+/* Skills */
+.skill-list .skill {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    margin: 1px;
+    background-color: #F0F8FF;
+}
+
+.skill.enabled {
+
+}
+
+.skill.disabled {
+    filter: grayscale(100%);
+    -webkit-filter: grayscale(100%);
+}
+
+.skill-list .double-strafe {
+    background-image: url('../assets/class/archer/ac_double.gif');
+}
+
+.skill-list .arrow-shower {
+    background-image: url('../assets/class/archer/ac_shower.gif');
+}
+
+.skill-list .vulture-eye {
+    background-image: url('../assets/class/archer/ac_vulture.gif');
+}
+
+.skill-list .heal {
+    background-image: url('../assets/class/acolyte/al_heal.gif');
+}
+
+.skill-list .blessing {
+    background-image: url('../assets/class/acolyte/al_blessing.gif');
+}
+
+.skill-list .angelus {
+    background-image: url('../assets/class/acolyte/al_angelus.gif');
+}
+
+.skill-list .fire-bolt {
+    background-image: url('../assets/class/mage/mg_firebolt.gif');
+}
+
+.skill-list .meteor-shower {
+    background-image: url('../assets/class/mage/wz_meteor.gif');
+}
+
+.skill-list .mp-recovery {
+    background-image: url('../assets/class/mage/mg_srecovery.gif');
+}
+
+.skill-list .bash {
+    background-image: url('../assets/class/swordsman/sm_bash.gif');
+}
+
+.skill-list .magnum-break {
+    background-image: url('../assets/class/swordsman/sm_magnum.gif');
+}
+
+.skill-list .hp-recovery {
+    background-image: url('../assets/class/swordsman/sm_recovery.gif');
+}
