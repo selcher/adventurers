@@ -1,5 +1,6 @@
 [
     {
+        "type": "Player",
         "name": "Arc",
         "level": 1,
         "experience": 0,
@@ -22,6 +23,7 @@
         }
     },
     {
+        "type": "Player",
         "name": "Aco",
         "level": 1,
         "experience": 0,
@@ -44,6 +46,7 @@
         }
     },
     {
+        "type": "Player",
         "name": "Mag",
         "level": 1,
         "experience": 0,
@@ -66,6 +69,7 @@
         }
     },
     {
+        "type": "Player",
         "name": "Luna",
         "level": 1,
         "experience": 0,
