@@ -10,7 +10,7 @@
     bottom: 0;
     left: 0;
     z-index: 1;
-    background: #fffaf0 url('../assets/corner.png') no-repeat;
+    background: #fffaf0 url('../assets/message/corner.png') no-repeat;
     color: #75511D;
     border-top: 2px solid #75511D;
     border-bottom: 2px solid #75511D;
@@ -47,7 +47,7 @@
     right: 0;
     left: 0;
     z-index: 1;
-    background: #fffaf0 url('../assets/corner.png') no-repeat;
+    background: #fffaf0 url('../assets/message/corner.png') no-repeat;
     color: #75511D;
     border-top: 2px solid #75511D;
     border-bottom: 2px solid #75511D;
