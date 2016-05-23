@@ -3,9 +3,13 @@
 (function(w,
     utils,
     data,
+    message,
     battle,
+    SkillClass,
     PlayerClass,
     EnemyClass,
+    enemyRegistry,
+    mapRegistry,
     PlayerRenderComp,
     EnemyRenderComp,
     topMenu,
@@ -13,159 +17,25 @@
     statusMenu) {
 
     /**
-     * Function: addPlayersToContainer
+     * Private Variables
      */
-    function addPlayersToContainer( players, container ) {
-        for ( var i = 0, len = players.length; i < len; i++ ) {
-            container.appendChild( players[ i ].getDOM() );
-        }
-    }
+    var players = [];
+    var experience = 0;
+    var zeny = 0;
+    var battleLoop = false;
+
 
     /**
-     * Function: setPlayers
+     * Public api
      */
-    function setPlayers( playersList ) {
-        this.players = playersList;
-    }
-
-    /**
-     * Function: createPlayer
-     */
-    function createPlayer( data, element ) {
-
-        return new PlayerClass(
-                data,
-                new PlayerRenderComp( element )
-            );
-    }
-
-    /**
-     * Function: createPlayers
-     */
-    function createPlayers( playersData ) {
-
-        var playerList = [];
-
-        for ( var i = playersData.length; i--; ) {
-
-            playerList.push(
-                this.createPlayer(
-                    playersData[ i ],
-                    utils.createElement( "div" )
-                )
-            );
-        }
-
-        return playerList;
-    }
-
-    /**
-     * Function: resetPlayers
-     */
-    function resetPlayers( players ) {
-
-        for ( var i = players.length; i--; ) {
-            players[ i ].resetStatus();
-        }
-    }
-
-    /**
-     * Function: createEnemy
-     */
-    function createEnemy( data, element ) {
-
-        return new EnemyClass(
-            data,
-            new EnemyRenderComp( element )
-        );
-    }
-
-    /**
-     * Function: createEnemies
-     */
-    function createEnemies( total, enemiesData ) {
-
-        var enemies = [];
-
-        for ( var i = total; i--; ) {
-
-            enemies.push(
-                this.createEnemy(
-                    enemiesData[ utils.getRandom( enemiesData ) ],
-                    utils.createElement( "div" )
-                )
-            );
-        }
-
-        return enemies;
-    }
-
-    /**
-     * Function: resetEnemy
-     */
-    function resetEnemy( enemy, newData ) {
-
-        return new EnemyClass(
-            newData,
-            enemy.renderer
-        );
-    }
-
-    // TODO:
-    // Consider using pub sub for calling levelUp
-    // Currently passed, then called from statusMenu
-    /**
-     * Function: levelUp
-     */
-    function levelUp( playerName ) {
-        var currentPlayer = null;
-
-        for ( var i = this.players.length; i--; ) {
-
-            if ( this.players[i].name === playerName ) {
-
-                currentPlayer = this.players[i];
-
-                    if ( currentPlayer.canLevelUp( this.experience ) ) {
-
-                     // Update Top Menu
-                     this.experience -= currentPlayer.getMaxExperience();
-                     this.updateTopMenu();
-
-                     // Update Player
-                     currentPlayer.levelUp();
-                     this.updateStatusMenu();
-
-                     console.log( "levelUp:", name, currentPlayer );
-
-                } else {
-                    console.log( "More experience required" );
-                }
-            }
-        }
-    }
-
-    /**
-     * Function: updateTopMenu
-     */
-    function updateTopMenu() {
-        topMenu.render( this.experience, this.zeny );
-    }
-
-    /**
-     * Function: updateStatusMenu
-     */
-    function updateStatusMenu() {
-        statusMenu.render( this.players, this.experience );
-    }
-
-    // TODO:
-    // Doing too many things,
-    // consider breaking down to separate modules if possible
     w.gameApi = {
 
-        // Players
-        "players": [],
+        // Data
+        "getData": getData,
+        "setData": setData,
+
+        // Player
+        "getPlayers": getPlayers,
         "setPlayers": setPlayers,
 
         "addPlayersToContainer": addPlayersToContainer,
@@ -176,6 +46,7 @@
 
         "levelUp": levelUp,
 
+        // Enemy
         "createEnemy": createEnemy,
         "createEnemies": createEnemies,
         "resetEnemy": resetEnemy,
@@ -184,71 +55,292 @@
         "updateTopMenu": updateTopMenu,
         "updateStatusMenu": updateStatusMenu,
 
-        // Selected location on Map
-        "map": "poring_field",
-        "locations": [],
-        "setLocation": function( locationName ) {
-
-            data.setLocation( locationName );
-            this.map = locationName;
-        },
-        "getNextLocation": function( locationName ) {
-
-            var locationData = data.getlocationData( locationName );
-
-            return locationData.next;
-        },
-        "unlockLocation": function( locationName ) {
-            data.unlockLocation( locationName );
-        },
+        // Map
+        "getLocation": getLocation,
+        "setLocation": setLocation,
+        "getNextLocation": getNextLocation,
+        "unlockLocation": unlockLocation,
 
         // Battle
-        "battleLoop": false,
-        "stopBattle": function() {
-            this.battleLoop = false;
-        },
-        "startBattle": function( type, locationName, battleDone ) {
-
-            this.battleLoop = true;
-
-            var battleStrategy = battle[ type ];
-
-            if ( battleStrategy ) {
-                battleStrategy.apply(
-                    this,
-                    [
-                        this.players,
-                        data.getlocationData( locationName ),
-                        battleDone
-                    ]
-                );
-            } else {
-                // TODO: handle battleStrategy not found
-            }
-
-        },
+        "startBattle": startBattle,
+        "stopBattle": stopBattle,
+        "hasBattleEnded": hasBattleEnded,
 
         // Experience
-        "experience": 0,
-        "setExperience": function setExperience( newExp ) {
-            this.experience = newExp;
-        },
+        "getExperience": getExperience,
+        "setExperience": setExperience,
 
         // Zeny
-        "zeny": 0,
-        "setZeny": function setZeny( newZeny ) {
-            this.zeny = newZeny;
-        }
+        "getZeny": getZeny,
+        "setZeny": setZeny
     };
 
-})(window,
+
+    /**
+     * Private methods
+     */
+
+    /** Data methods **/
+
+    function getData() {
+
+        return {
+            "player": this.getPlayers(),
+            "experience": this.getExperience(),
+            "zeny": this.getZeny()
+        }
+    }
+
+    function setData( newData ) {
+
+        var playerList = this.createPlayers( newData.player );
+
+        this.setPlayers( playerList );
+        this.setExperience( newData.experience );
+        this.setZeny( newData.zeny );
+    }
+
+
+    /** Player methods */
+
+    function getPlayers() {
+        return players;
+    }
+
+    function setPlayers( playerList ) {
+        players = playerList.slice();
+    }
+
+    function addPlayersToContainer( playerList, container ) {
+
+        utils.each( playerList, function( player ) {
+            container.appendChild( player.getDOM() );
+        });
+    }
+
+    function initPlayerSkills( playerLevel, skillsData ) {
+
+        var skills = {};
+        var skillInfo = null;
+
+        for ( var i in skillsData ) {
+
+            skillInfo = new SkillClass( skillsData[ i ] );
+
+            if ( playerLevel >= skillInfo.getRequiredLevel() ) {
+                skillInfo.enable();
+            }
+
+            skills[ i ] = skillInfo;
+        }
+
+        return skills;
+    }
+
+    function createPlayer( data, element ) {
+
+        if ( data.skills ) {
+            data.skills = initPlayerSkills( data.level, data.skills );
+        }
+
+        return new PlayerClass(
+                data,
+                new PlayerRenderComp( element )
+            );
+    }
+
+    function createPlayers( playersData ) {
+
+        var playerList = [];
+
+        utils.each( playersData, function( playerData ) {
+
+            playerList.push(
+                this.createPlayer(
+                    playerData,
+                    utils.createElement( "div" )
+                )
+            );
+        }, this );
+
+        return playerList;
+    }
+
+    function resetPlayers( playerList ) {
+
+        utils.each( playerList, function( player ) {
+            player.resetStatus();
+        });
+    }
+
+    // TODO:
+    // Consider using pub sub for calling levelUp
+    // Currently passed, then called from statusMenu
+    function levelUp( playerName ) {
+
+        var currentPlayer = null;
+
+        utils.each( this.getPlayers(), function( player ) {
+
+            if ( player.name === playerName ) {
+
+                currentPlayer = player;
+
+                // Update Top Menu
+                this.setExperience(
+                    this.getExperience() - currentPlayer.getMaxExperience()
+                );
+                this.updateTopMenu();
+
+                // Update Player
+                currentPlayer.levelUp();
+                this.updateStatusMenu();
+            }
+        }, this );
+    }
+
+
+    /** Enemy methods **/
+
+    function getEnemyData( name ) {
+        return enemyRegistry.get( name );
+    }
+
+    function createEnemy( name, element ) {
+
+        return new EnemyClass(
+            getEnemyData( name ),
+            new EnemyRenderComp( element )
+        );
+    }
+
+    function createEnemies( total, enemyNames ) {
+
+        var enemies = [];
+
+        for ( var i = total; i--; ) {
+
+            enemies.push(
+                this.createEnemy(
+                    enemyNames[ utils.getRandom( enemyNames ) ],
+                    utils.createElement( "div" )
+                )
+            );
+        }
+
+        return enemies;
+    }
+
+    function resetEnemy( enemy, newEnemyName ) {
+
+        return new EnemyClass(
+            getEnemyData( newEnemyName ),
+            enemy.renderer
+        );
+    }
+
+
+    /** Menu methods **/
+
+    function updateTopMenu() {
+        topMenu.render( this.getExperience(), this.getZeny() );
+    }
+
+    function updateStatusMenu() {
+        statusMenu.render( this.getPlayers(), this.getExperience() );
+    }
+
+
+    /** Map methods **/
+
+    function getLocation() {
+        return mapRegistry.getCurrent();
+    }
+
+    function setLocation( locationName ) {
+        mapRegistry.current( locationName );
+    }
+
+    function getNextLocation( locationName ) {
+
+        var locationData = mapRegistry.get( locationName );
+
+        return locationData.next;
+    }
+
+    function unlockLocation( locationName ) {
+        mapRegistry.unlock( locationName );
+    }
+
+
+    /** Battle methods **/
+
+    function startBattle( type, locationId, battleDone ) {
+
+        battleLoop = true;
+
+        var battleStrategy = battle[ type ];
+
+        if ( battleStrategy ) {
+
+            battleStrategy.apply(
+                this,
+                [
+                    this.getPlayers(),
+                    mapRegistry.get( locationId ),
+                    battleDone
+                ]
+            );
+
+        } else {
+            // TODO: handle battleStrategy not found
+        }
+
+    }
+
+    function stopBattle() {
+        battleLoop = false;
+    }
+
+    function hasBattleEnded() {
+        return battleLoop;
+    }
+
+
+    /** Experience methods **/
+
+    function getExperience() {
+        return experience;
+    }
+
+    function setExperience( newExp ) {
+        experience = newExp;
+    }
+
+
+    /** Zeny methods **/
+
+    function getZeny() {
+        return zeny;
+    }
+
+    function setZeny( newZeny ) {
+        zeny = newZeny;
+    }
+
+})( window,
     window.utilsApi,
     window.dataApi,
+    window.messageApi,
     window.battleApi,
+    Skill,
     Player,
     Enemy,
+    window.enemyRegistryApi,
+    window.mapRegistryApi,
     window.PlayerRender,
     window.EnemyRender,
     window.topMenuApi,
     window.stageApi,
-    window.statusMenuApi);
+    window.statusMenuApi
+);

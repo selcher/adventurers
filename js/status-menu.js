@@ -2,8 +2,28 @@
 
 (function( w ) {
 
+    /**
+     * Private variables
+     */
     var container = null;
+    var actions = {};
 
+
+    /**
+     * Public api
+     */
+    w.statusMenuApi = {
+        "init": init,
+        "setActions": setActions,
+        "render": render,
+        "show": show,
+        "hide": hide
+    };
+
+
+    /**
+     * Private methods
+     */
     function init( element ) {
 
         container = element;
@@ -24,8 +44,6 @@
         }
     }
 
-    var actions = {};
-
     function setActions( gameActions ) {
         actions = gameActions;
     }
@@ -45,6 +63,24 @@
         return result;
     }
 
+    function renderSkillList( level, skills ) {
+
+        var result = '<div class="skill-list">';
+        var enabled = false;
+        var style = "";
+
+        for ( var i in skills ) {
+            enabled = level >= skills[ i ].requiredLevel ?
+                "enabled" : "disabled";
+            style = "skill " + i + " " + enabled;
+            result += '<div class="' + style + '"></div>';
+        }
+
+        result += '</div>';
+
+        return result;
+    }
+
     function render( playerList, experience ) {
 
         var content = "";
@@ -56,9 +92,8 @@
             var levelUpClass = player.canLevelUp( experience ) ?
                 "level-up" : "level-up hide";
             content += [
-                '<div class="player-status player-',
-                    player.name +'">',
-                    '<div class="avatar"></div>',
+                '<div class="player-status">',
+                    '<div class="' + player.name + ' avatar"></div>',
                     '<div class="info">',
                         '<div class="name">',
                             player.name + '<br/>',
@@ -86,6 +121,7 @@
                                 '<div class="stat">',
                                     'Skills',
                                 '</div>',
+                                renderSkillList( player.level, player.skills ),
                             '</div>',
                         '</div>',
                     '</div>',
@@ -103,16 +139,5 @@
     function hide() {
         container.classList.add( "hide" );
     }
-
-    var api = {
-        "init": init,
-        "setActions": setActions,
-        "render": render,
-        "show": show,
-        "hide": hide
-    };
-
-    // Attach to global namespace
-    w.statusMenuApi = api;
 
 })( window );

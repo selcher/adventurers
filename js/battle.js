@@ -1,16 +1,75 @@
 // Battle Api
-// requestAnimationFrame(function gameLoop() {
-//     processInput();
-//     update();
-//     render();
-// });
 
-(function( w, utils, stage ) {
+(function( w, utils, stage, message ) {
 
     // TODO:
     // Refactor common parts of each battle type (strategy pattern)
 
+    /**
+     * Private Variables
+     */
+    var messageTimer = null;
+
+
+    /**
+     * Public api
+     */
+    w.battleApi = {
+        "normal": normalBattle,
+        "boss": bossBattle
+    };
+
+
+    /**
+     * Private methods
+     */
+    function showMessage( content, callback, delay ) {
+
+        message.render( content ).show();
+
+        if ( messageTimer ) {
+            clearTimeout( messageTimer );
+        }
+
+        messageTimer = setTimeout( function() {
+            callback && callback();
+            message.hide();
+        }, delay );
+    }
+
+    function getSkillTargets( player, players, enemies ) {
+
+        var targets = [];
+        var activatedSkill = player.getActivatedSkill();
+        var targetType = activatedSkill.targetType;
+        var isMultipleTarget = activatedSkill.multipleTarget;
+
+        if ( targetType === "player" ) {
+            targets = players;
+        } else if ( targetType === "enemy" ) {
+            targets = enemies;
+        } else if ( targetType === "self" ) {
+            targets = [ player ];
+        }
+
+        if ( !isMultipleTarget ) {
+
+            var targetIndex = utils.getRandom( targets );
+            var target = targets[ targetIndex ];
+
+            targets = [ target ];
+        }
+
+        return targets;
+    };
+
     function normalBattle( players, locationData, battleDone ) {
+
+        message.setType( "battle" );
+        showMessage(
+            locationData.name,
+            function() {},
+            3000 );
 
         var game = this;
 
@@ -29,51 +88,82 @@
 
         requestAnimationFrame(function gameLoop() {
 
-            var currentPlayer = null;
-            var currentEnemy = null;
+            var currentPlayerState = null;
+            var currentEnemyState = null;
 
             // Updating
-            for (var i = players.length; i--;) {
-                currentPlayer = players[i];
+            utils.each( players, function( currentPlayer, i ) {
+
                 currentPlayer.update();
+                currentPlayerState = currentPlayer.getState();
 
-                if ( currentPlayer.status === "attack" ) {
+                if ( currentPlayerState === "attack" ) {
+
                     currentEnemy = utils.pickRandomTarget( enemies );
-                    if (currentEnemy) {
-                        players[i].attack( currentEnemy );
+
+                    if ( currentEnemy ) {
+                        currentPlayer.attack( currentEnemy );
                     }
+
+                } else if ( currentPlayerState === "activateSkill" ) {
+
+                    var activatedSkill = currentPlayer.getActivatedSkill();
+                    var skillTargets = getSkillTargets(
+                        currentPlayer, players, enemies );
+
+                    var messageType = [
+                        currentPlayer.name,
+                        "skill",
+                        activatedSkill.getId(),
+                    ].join( " " );
+
+                    message.setType( messageType );
+                    showMessage(
+                        activatedSkill.getName(),
+                        function() {},
+                        3000
+                    );
+
+                    currentPlayer.activateSkill( skillTargets );
                 }
-            }
+            });
 
-            for (var i = enemies.length; i--;) {
-                currentEnemy = enemies[i];
+            utils.each( enemies, function( currentEnemy, i ) {
+
                 currentEnemy.update();
+                currentEnemyState = currentEnemy.getState();
 
-                if ( currentEnemy.status === "attack" ) {
+                if ( currentEnemyState === "attack" ) {
+
                     currentPlayer = players[ utils.getRandom( players ) ];
-                    if (currentPlayer) {
-                        enemies[i].attack( currentPlayer );
+
+                    if ( currentPlayer ) {
+                        currentEnemy.attack( currentPlayer );
                     } else {
                         // TODO: show miss emoticon
                     }
-                } else if ( currentEnemy.status === "dead" ) {
+
+                } else if ( currentEnemyState === "dead" ) {
+
                     game.setExperience(
-                        game.experience + currentEnemy.getExperience()
+                        game.getExperience() + currentEnemy.getExperience()
                     );
                     game.setZeny(
-                        game.zeny + currentEnemy.getZeny()
+                        game.getZeny() + currentEnemy.getZeny()
                     );
                     game.updateTopMenu();
-                } else if ( currentEnemy.status === "alive" ) {
-                    enemies[i] = game.resetEnemy(
+
+                } else if ( currentEnemyState === "alive" ) {
+
+                    currentEnemy = game.resetEnemy(
                         currentEnemy,
                         enemiesData[ utils.getRandom( enemiesData ) ]
                     );
                 }
-            }
+            });
 
             // Battle conditions
-            if ( game.battleLoop ) {
+            if ( game.hasBattleEnded() ) {
                 requestAnimationFrame( gameLoop );
             } else {
                 game.resetPlayers( players );
@@ -85,6 +175,12 @@
 
     function bossBattle( players, locationData, battleDone ) {
 
+        message.setType( "battle" );
+        showMessage(
+            locationData.name,
+            function() {},
+            3000 );
+
         var game = this;
         var victory = false;
 
@@ -94,6 +190,8 @@
         game.addPlayersToContainer( players, playersContainer );
         stage.add( playersContainer );
 
+        var remainingPlayers = players.length;
+
         // Init Enemies
         var enemiesData = locationData.enemies.slice();
         var enemies = this.createEnemies( 4, enemiesData );
@@ -101,133 +199,164 @@
         game.addPlayersToContainer( enemies, enemiesContainer );
         stage.add( enemiesContainer );
 
-        // Init players
-        var remainingPlayers = players.length;
-
-        // Init enemies
-        var bossData = locationData.boss;
         var boss = this.createEnemy(
             locationData.boss,
             utils.createElement( "div" )
         );
-        var remainingMinions = bossData.minions;
-
-        console.log("start boss battle:", players, enemies);
+        var remainingMinions = boss.minions;
 
         requestAnimationFrame(function gameLoop() {
 
             var totalPlayers = players.length;
             var currentPlayer = null;
+            var currentPlayerState = null;
             var totalEnemies = enemies.length;
             var currentEnemy = null;
+            var currentEnemyState = null;
 
             // Updating
-            for(var i = totalPlayers; i--;) {
-                currentPlayer = players[i];
+            utils.each( players, function( currentPlayer, i ) {
+
                 currentPlayer.update();
-                if ( currentPlayer.status === "attack" ) {
+                currentPlayerState = currentPlayer.getState();
+
+                if ( currentPlayerState === "attack" ) {
+
                     currentEnemy = utils.pickRandomTarget( enemies );
-                    if (currentEnemy) {
-                        players[i].attack( currentEnemy );
+
+                    if ( currentEnemy ) {
+                        currentPlayer.attack( currentEnemy );
                     }
-                } else if ( currentPlayer.status === "dead" ) {
-                    players[ i ].status = "standby";
+
+                } else if ( currentPlayerState === "activateSkill" ) {
+
+                    var activatedSkill = currentPlayer.getActivatedSkill();
+                    var skillTargets = getSkillTargets(
+                        currentPlayer, players, enemies );
+
+                    if ( skillTargets && skillTargets.length ) {
+
+                        var messageType = [
+                            currentPlayer.name,
+                            "skill",
+                            activatedSkill.getId(),
+                        ].join( " " );
+
+                        message.setType( messageType );
+                        showMessage(
+                            activatedSkill.getName(),
+                            function() {},
+                            3000
+                        );
+
+                        currentPlayer.activateSkill( skillTargets );
+                    }
+
+                } else if ( currentPlayerState === "dead" ) {
+
+                    currentPlayer.disable();
                     remainingPlayers--;
                 }
-            }
+            });
 
-            for(var i = totalEnemies; i--;) {
-                currentEnemy = enemies[i];
-                currentEnemy.update();
-                if ( currentEnemy.status === "attack" ) {
-                    currentPlayer = players[ utils.getRandom( players ) ];
+            utils.each( enemies, function( currentEnemy, i ) {
 
-                    if (currentPlayer) {
-                        enemies[i].attack( currentPlayer );
-                    } else {
-                        // TODO: show miss emoticon
-                    }
-                } else if ( currentEnemy.status === "dead" ) {
+                if ( currentEnemy ) {
 
-                    game.setExperience(
-                        game.experience + currentEnemy.getExperience()
-                    );
-                    game.setZeny(
-                        game.zeny + currentEnemy.getZeny()
-                    );
-                    game.updateTopMenu();
+                    currentEnemy.update();
+                    currentEnemyState = currentEnemy.getState();
 
-                    console.log("loop dead - minions - boss:",
-                        remainingMinions, boss.isAlive());
+                    if ( currentEnemyState === "attack" ) {
 
-                } else if ( currentEnemy.status === "alive" ) {
-                    if ( remainingMinions && remainingMinions > 4 ) {
-                        // If there are still more than 4 left
-                        // add more enemies
-                        remainingMinions--;
-                        enemies[i] = game.resetEnemy(
-                            enemies[i],
-                            enemiesData[ utils.getRandom( enemiesData ) ]
+                        currentPlayer = players[ utils.getRandom( players ) ];
+
+                        if ( currentPlayer ) {
+                            currentEnemy.attack( currentPlayer );
+                        } else {
+                            // TODO: show miss emoticon
+                        }
+
+                    } else if ( currentEnemyState === "dead" ) {
+
+                        game.setExperience(
+                            game.getExperience() + currentEnemy.getExperience()
                         );
-                    } else {
-                        remainingMinions--;
-                        // remove from dom
-                        enemiesContainer.removeChild( enemies[i].getDOM() );
-                        // remove enemy from list
-                        // since only 4 can be shown on the battle stage
-                        enemies.splice( i, 1 );
+                        game.setZeny(
+                            game.getZeny() + currentEnemy.getZeny()
+                        );
+                        game.updateTopMenu();
+
+                    } else if ( currentEnemyState === "alive" ) {
+
+                        if ( remainingMinions && remainingMinions > 4 ) {
+                            // If there are still more than 4 left
+                            // add more enemies
+                            remainingMinions--;
+                            enemies[i] = game.resetEnemy(
+                                enemies[i],
+                                enemiesData[ utils.getRandom( enemiesData ) ]
+                            );
+                        } else {
+                            remainingMinions--;
+                            // remove from dom
+                            enemiesContainer.removeChild( enemies[i].getDOM() );
+                            // remove enemy from list
+                            // since only 4 can be shown on the battle stage
+                            enemies.splice( i, 1 );
+                        }
+
+                        if ( remainingMinions <= 0 && enemies.length <= 0
+                            && boss.isAlive() ) {
+
+                            // Add boss if all minions is defeated
+                            enemies = [ boss ];
+                            enemiesContainer.appendChild( boss.getDOM() );
+                        }
                     }
-
-                    if ( remainingMinions <= 0 && enemies.length <= 0
-                        && boss.isAlive() ) {
-
-                        console.log("add boss:", remainingMinions, enemies);
-                        enemies = [ boss ];
-                        enemiesContainer.appendChild( boss.getDOM() );
-                    }
-
-                    console.log("loop alive - minions - boss:",
-                        remainingMinions, boss.isAlive());
                 }
-            }
+            });
 
             // Battle Conditions
             if ( !boss.isAlive() ) {
 
-                // Victory - all enemies defeated
-                game.battleLoop = false;
+                game.stopBattle();
                 victory = true;
 
             } else if ( remainingPlayers <= 0 ) {
 
-                // Defeat - all players defeated
-                game.battleLoop = false;
+                game.stopBattle();
                 victory = false;
             }
 
-            if ( game.battleLoop ) {
-                requestAnimationFrame( gameLoop );
-            } else {
-                console.log("boss battle done:", remainingMinions, enemies);
+            if ( game.hasBattleEnded() ) {
 
-                // TODO:
-                // show message unlocked next map
-                // unlock next map
+                requestAnimationFrame( gameLoop );
+
+            } else {
+
+                game.resetPlayers( players );
+                game.setPlayers( players );
+
+                utils.each( players, function( currentPlayer ) {
+                    currentPlayer.update();
+                });
+
                 if ( victory ) {
-                    var nextLocation = game.getNextLocation( game.map );
+                    var nextLocation = game.getNextLocation( locationData.id );
                     game.unlockLocation( nextLocation );
                 }
 
-                battleDone();
+                message.setType( "battle" );
+                showMessage(
+                    victory ? "VICTORY" : "DEFEAT",
+                    battleDone,
+                    3000 );
             }
-
         });
-
     }
 
-    w.battleApi = {
-        "normal": normalBattle,
-        "boss": bossBattle
-    };
-
-})( window, window.utilsApi, window.stageApi );
+})( window,
+    window.utilsApi,
+    window.stageApi,
+    window.messageApi
+);
