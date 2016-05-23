@@ -1,0 +1,111 @@
+/* Reset saved game */
+.message .reset-saved-game {
+    padding: 5px 0 5px 105px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    background: #fffaf0 url('../assets/corner.png') no-repeat;
+    color: #75511D;
+    border-top: 2px solid #75511D;
+    border-bottom: 2px solid #75511D;
+}
+
+.reset-saved-game .message-header {
+    font-size: 32px;
+}
+
+.reset-saved-game .message-content {
+    flex: 0 1 40%;
+    display: flex;
+    flex-direction: column;
+}
+
+.reset-saved-game .button {
+    margin: 8px 0;
+    padding: 8px;
+}
+
+.reset-saved-game .button:hover {
+    color: #FFFAF0;
+    background-color: #75511D;
+    cursor: pointer;
+}
+
+
+/* Battle */
+.message .battle {
+    padding: 5px 0 5px 105px;
+    box-sizing: border-box;
+    position: absolute;
+    top: 26px;
+    right: 0;
+    left: 0;
+    z-index: 1;
+    background: #fffaf0 url('../assets/corner.png') no-repeat;
+    color: #75511D;
+    border-top: 2px solid #75511D;
+    border-bottom: 2px solid #75511D;
+}
+
+.message .battle .info {
+    font-size: 20px;
+    letter-spacing: 4px;
+    line-height: 20px;
+}
+
+/* Players */
+.message .Luna {
+    background-position: -95px -75px;
+    background-repeat: no-repeat;
+}
+
+.message .Arc {
+    background-position: -90px -70px;
+    background-repeat: no-repeat;
+}
+
+.message .Mag {
+    background-position: -90px -63px;
+    background-repeat: no-repeat;
+}
+
+.message .Aco {
+    background-position: -85px -70px;
+    background-repeat: no-repeat;
+}
+
+/* Skills */
+.message .skill {
+    padding: 5px 0 5px 60px;
+    box-sizing: border-box;
+    position: absolute;
+    top: 26px;
+    right: 0;
+    left: 0;
+    z-index: 1;
+    background-color: #6495ED;
+    color: #000;
+}
+
+.message .skill .info-tip {
+    display: inline-block;
+    border-top: 10px solid transparent;
+    border-right: 10px solid #FFF;
+}
+
+.message .skill .info {
+    display: inline-block;
+    width: 90%;
+    padding: 5px;
+    border-radius: 4px;
+    background-color: #FFF;
+    font-size: 20px;
+    letter-spacing: 4px;
+    line-height: 20px;
+}
