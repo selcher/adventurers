@@ -1,177 +1,234 @@
 // Game Data
 
-(function( w, storage ) {
+(function( w, storage, jq, utils,
+    classData, skillData,
+    enemyRegistry, mapRegistry ) {
 
-    function loadPlayerData() {
-        var deferred = $.Deferred();
+    /**
+     * Private Variables
+     */
+    var version = "1.0.0";
+    var storageName = "autoRPG";
+    var autoSave = false;
 
-        $.ajax(
-            "js/data-player.js",
-            {
-                "type": "GET",
-                "success": function ( data, status, xhr ) {
-                    deferred.resolve( data );
-                },
-                "error": function ( xhr, status ) {
-                    deferred.reject( null );
-                }
-            }
-        );
+    var playerDataUrl = "js/player-data.js";
+    var mapDataUrl = "js/map-data.js";
+    var enemyDataUrl = "js/enemy-data.js";
 
-        return deferred;
-    }
+    var defaultExperience = 100000;
+    var defaultZeny = 0;
 
-    function loadMapData() {
-        var deferred = $.Deferred();
 
-        $.ajax(
-            "js/data-map.js",
-            {
-                "type": "GET",
-                "success": function ( data, status, xhr ) {
-                    deferred.resolve( data );
-                },
-                "error": function ( xhr, status ) {
-                    deferred.reject( null );
-                }
-            }
-        );
-
-        return deferred;
-    }
-
-    function formatMapData( initialMapData ) {
-        var data = {
-            "locations": []
-        };
-
-        for ( var locationName in initialMapData ) {
-            data.locations.push({
-                "name": locationName,
-                "current": false,
-                "locked": true
-            });
-        }
-
-        data.locations[0].current = true;
-        data.locations[0].locked = false;
-
-        return data;
+    /**
+     * Public Api
+     */
+    w.dataApi = {
+        "loadData": loadData,
+        "saveData": saveData,
+        "hasSavedData": hasSavedData,
+        "enableAutoSave": enableAutoSave,
+        "isAutoSaveEnabled": isAutoSaveEnabled,
+        "loadSavedUserData": loadSavedUserData,
+        "loadDefaultUserData": loadDefaultUserData
     };
 
+
+    /**
+     * Private methods
+     */
+    function loadData( callback ) {
+
+        var loadGameDataDef = loadGameData();
+        var loadUserDataDef = null;
+
+        loadGameDataDef.then(function( status ) {
+            if ( status ) {
+                callback && callback();
+            }
+        });
+    }
+
+
+    function saveData( data ) {
+
+        data.version = version;
+        data.map = mapRegistry.getUnlockedLocations();
+
+        setTimeout(function() {
+            setStorageData( data );
+        });
+    }
+
+
+    function hasSavedData() {
+        return hasStorageData();
+    }
+
+
+    function loadGameData() {
+
+        var loadDeferred = jq.Deferred();
+        var loadMapDef = getDataRequest( mapDataUrl );
+        var loadEnemyDef = getDataRequest( enemyDataUrl );
+
+        jq.when( loadMapDef, loadEnemyDef ).done(
+            function( mapDataResult, enemyDataResult ) {
+
+                registerMapData( utils.parse( mapDataResult ) );
+                registerEnemyData( utils.parse( enemyDataResult ) );
+
+                loadDeferred.resolve( "success" );
+            }
+        );
+
+        return loadDeferred;
+    }
+
+
+    function loadUserData() {
+
+        var loadDeferred = null;
+
+        if ( hasSavedData() ) {
+            loadDeferred = loadSavedUserData();
+        } else {
+            loadDeferred = loadDefaultUserData();
+        }
+
+        return loadDeferred;
+    }
+
+
+    function loadSavedUserData() {
+
+        var loadDeferred = jq.Deferred();
+        var userData = getStorageData();
+
+        utils.each(userData.map, function( locationId ) {
+            mapRegistry.unlock( locationId );
+        });
+
+        loadDeferred.resolve( userData );
+
+        return loadDeferred;
+    }
+
+
+    function loadDefaultUserData() {
+
+        var loadDeferred = jq.Deferred();
+        var loadPlayerDef = getDataRequest( playerDataUrl );
+
+        jq.when( loadPlayerDef ).done(
+            function( playerDataResult ) {
+
+                var playerData = utils.parse( playerDataResult );
+
+                var result = {
+                    "player": formatPlayerData( playerData ),
+                    "experience": defaultExperience,
+                    "zeny": defaultZeny,
+                    "map": mapRegistry.getUnlockedLocations()
+                };
+
+                loadDeferred.resolve( result );
+            }
+        );
+
+        return loadDeferred;
+    }
+
+
+    function getDataRequest( url ) {
+
+        var deferred = jq.Deferred();
+
+        jq.ajax(
+            url,
+            {
+                "type": "GET",
+                "success": function ( data, status, xhr ) {
+                    deferred.resolve( data );
+                },
+                "error": function ( xhr, status ) {
+                    deferred.reject( null );
+                }
+            }
+        );
+
+        return deferred;
+    }
+
+
+    function hasStorageData() {
+        return storage && storage[ storageName ];
+    }
+
+
+    function getStorageData() {
+        return utils.parse( storage[ storageName ] );
+    }
+
+
+    function setStorageData( data ) {
+        storage[ storageName ] = utils.toString( data );
+    }
+
+
     function formatPlayerData( playerData ) {
-        // Update player skills based on current level and jobClass
+
+        utils.each( playerData, function( data, i ) {
+            playerData[ i ].skills = buildSkillList( data );
+        });
+
         return playerData;
     }
 
-    function loadDataFromStorage( callback ) {
-        gameData = JSON.parse( storage[ storageName ] );
-        callback && callback();
+
+    function buildSkillList( playerData ) {
+
+        var playerClassData = classData[ playerData.class.toLowerCase() ];
+        var classSkillList = playerClassData ? playerClassData.skills : [];
+        var skillName = "";
+        var skills = {};
+
+        utils.each( classSkillList, function( skillName, i ) {
+            skills[ skillName ] = skillData.get( skillName );
+        });
+
+        return skills;
     }
 
-    function loadDataFromDefault( callback ) {
 
-        var loadPlayerDef = loadPlayerData();
-        var loadMapDef = loadMapData();
-
-        $.when( loadPlayerDef, loadMapDef ).done(
-            function( playerDataResult, mapDataResult ) {
-
-                mapData = JSON.parse( mapDataResult )[ 0 ];
-                var playerData = JSON.parse( playerDataResult );
-
-                gameData = {
-                    "player": formatPlayerData( playerData ),
-                    "experience": experienceData,
-                    "zeny": zenyData,
-                    "map": formatMapData( mapData )
-                };
-
-                setTimeout( function () {
-                    callback && callback();
-                }, 0 );
-
-            }
-        );
-
+    function registerEnemyData( enemyData ) {
+        utils.each( enemyData, function( enemy ) {
+            enemyRegistry.register( enemy.name, enemy );
+        });
     }
 
-    function loadData( callback ) {
-        if ( storage && storage[ storageName ] ) {
-            loadDataFromStorage( callback );
-        } else {
-            loadDataFromDefault( callback );
-        }
+
+    function registerMapData( mapData ) {
+        utils.each( mapData, function( location ) {
+            mapRegistry.register( location.id, location );
+        });
     }
 
-    function saveData( data ) {
-        if ( storage ) {
-            gameData = data;
-            storage[ storageName ] = JSON.stringify( data );
-        }
+
+    function isAutoSaveEnabled() {
+        return autoSave;
     }
 
-    // Private Variables
-    var storageName = "autoRPG";
-    var playerData = [];
-    var mapData = {};
-    var experienceData = 10000;
-    var zenyData = 0;
-    var gameData = {};
 
-    // Public Api
-    var dataApi = {
-        "loadData": loadData,
-        "saveData": saveData,
-        "getPlayers": function() {
-            return gameData.player;
-        },
-        "setPlayers": function( data ) {
-            gameData.player = data;
-        },
-        "setLocation": function( location ) {
-            var locations = gameData.map.locations;
+    function enableAutoSave() {
+        autoSave = true;
+    }
 
-            for ( var i = locations.length; i--; ) {
-                locations[ i ].current = locations[ i ].name === location;
-            }
-        },
-        "unlockLocation": function( location ) {
-            var locations = gameData.map.locations;
-
-            for ( var i = locations.length; i--; ) {
-                if ( locations[ i ].name === location ) {
-                    locations[ i ].locked = false;
-                }
-            }
-        },
-        "getLocations": function() {
-            return gameData.map.locations;
-        },
-        "getlocationData": function( location ) {
-            return mapData[ location ];
-        },
-        "getEnemies": function( map ) {
-            return this.getMap( map ).enemies;
-        },
-        "getBoss": function( map ) {
-            return this.getMap( map ).boss;
-        },
-        "getExperience": function() {
-            return gameData.experience;
-        },
-        "setExperience": function( data ) {
-            gameData.experience = data;
-        },
-        "getZeny": function() {
-            return gameData.zeny;
-        },
-        "setZeny": function( data ) {
-            gameData.zeny = data;
-        }
-    };
-
-    // Attach to global namespace
-    w.dataApi = dataApi;
-
-})( window, window.localStorage );
+})( window,
+    window.localStorage,
+    $,
+    window.utilsApi,
+    window.classDataApi,
+    window.skillDataApi,
+    window.enemyRegistryApi,
+    window.mapRegistryApi
+);

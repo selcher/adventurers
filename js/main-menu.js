@@ -1,28 +1,46 @@
-(function ( w, gameContent, controls ) {
+(function ( w, data, game, message, gameContent, controls, credits ) {
 
-    function renderContent( element, content ) {
-        element.innerHTML = content;
-    };
-
+    /**
+     * Private variables
+     */
     var container = null;
     var menu = {
         "start": {
             "label": "NEW GAME",
+            "enabled": true,
             "className": "new-game-button",
             "action": onClickNewGame
         },
         "continue": {
             "label": "CONTINUE",
+            "enabled": false,
             "className": "continue-button",
             "action": onClickContinue
         },
         "credits": {
             "label": "CREDITS",
+            "enabled": true,
             "className": "credits-button",
             "action": onClickCredits
         }
     };
 
+
+    /**
+     * Public api
+     */
+    w.mainMenuApi = {
+        "init": init,
+        "render": render,
+        "show": show,
+        "hide": hide,
+        "enableOption": enableOption
+    };
+
+
+    /**
+     * Private methods
+     */
     function init( element ) {
 
         container = element;
@@ -51,19 +69,72 @@
 
     function onClickNewGame() {
         hide();
-        gameContent.show();
-        controls.clickMap();
+
+        if ( data.hasSavedData() ) {
+            showResetSavedGameMessage();
+        } else {
+            startNewGame();
+        }
+    }
+
+    function showResetSavedGameMessage() {
+        message.setTitle( "NEW GAME" );
+        message.setType( "reset-saved-game" );
+        message.setButtons([
+            {
+                "id": "continue-button",
+                "class": "button confirm",
+                "text": "Continue",
+                "click": startNewGame
+            },
+            {
+                "id": "cancel-button",
+                "class": "button cancel",
+                "text": "Cancel",
+                "click": function() {
+                    hideResetSavedGameMessage();
+                    show();
+                }
+            }
+        ]);
+        message.render( "Saved game data will be reset." ).show();
+    }
+
+    function hideResetSavedGameMessage() {
+        message.hide();
+        message.reset();
+    }
+
+    function startNewGame() {
+        var loadData = data.loadDefaultUserData();
+        loadData.then( function( userData ) {
+            hideResetSavedGameMessage();
+            data.enableAutoSave();
+            game.setData( userData );
+            gameContent.show();
+            controls.clickMap();
+        });
     }
 
     function onClickContinue() {
         hide();
-        gameContent.show();
+        data.enableAutoSave();
+
+        var loadData = data.loadSavedUserData();
+        loadData.then( function( userData ) {
+            game.setData( userData );
+            gameContent.show();
+            controls.clickMap();
+        });
     }
 
     function onClickCredits() {
-        hide();
-        gameContent.show();
+        credits.show();
     }
+
+    function renderContent( element, content ) {
+        element.innerHTML = content;
+    };
 
     function render() {
 
@@ -79,9 +150,12 @@
         for ( var i in menu ) {
 
             info = menu[ i ];
-            content += '<div class="' + info.className + ' button">' +
-                info.label +
-                '</div>';
+
+            if ( info.enabled ) {
+                content += '<div class="' + info.className + ' button">' +
+                    info.label +
+                    '</div>';
+            }
         }
 
         content += "</div>";
@@ -99,11 +173,15 @@
         container.classList.add( "hide" );
     }
 
-    window.mainMenuApi = {
-        "init": init,
-        "render": render,
-        "show": show,
-        "hide": hide
-    };
+    function enableOption( option ) {
+        menu[ option ].enabled = true;
+    }
 
-})( window, window.contentApi, window.controlsApi );
+})( window,
+    window.dataApi,
+    window.gameApi,
+    window.messageApi,
+    window.contentApi,
+    window.controlsApi,
+    window.creditsApi
+);
