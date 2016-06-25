@@ -52,9 +52,12 @@
             animationStyle = "-webkit-transform: translateX(" + x + "px);";
         }
 
-        var className = name + ' avatar enemy ' + state;
-        var result = '<div class="' + className + '" ' +
-            'style="' + animationStyle + '"></div>';
+        var avatarClassName = name + ' avatar enemy ' + state;
+        var avatarShadowClassName = name + ' avatar-shadow enemy ' + state;
+        var result = [
+            '<div class="' + avatarClassName + '" ' + 'style="' + animationStyle + '"></div>',
+            '<div class="' + avatarShadowClassName + '"></div>'
+        ].join( "" );
 
         return result;
     };

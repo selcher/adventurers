@@ -54,13 +54,13 @@
 .Rodra.avatar {
     background-image: url("../assets/enemy/rodra.gif");
     background-size: 46px 55px;
-    background-position: 50% 80%;
+    background-position: 50% 78%;
 }
 
 .Rocker.avatar {
     background-image: url("../assets/enemy/rocker.gif");
     background-size: 51px 95px;
-    background-position: 50% 80%;
+    background-position: 50% 50%;
 }
 
 /* Poring Field 2 - Boss */

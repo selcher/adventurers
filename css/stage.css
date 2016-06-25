@@ -87,6 +87,17 @@
     background-repeat: no-repeat;
 }
 
+.player-avatar .avatar-shadow {
+    width: 49px;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.1);
+    position: absolute;
+    bottom: 20px;
+    left: 38%;
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
 /* Avatar Status */
 
 .avatar-status-container {
