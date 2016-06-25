@@ -1,0 +1,77 @@
+.loading-screen {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    position: absolute;
+    z-index: 1;
+    flex-direction: column;
+    background-color: #000;
+    color: #FFF;
+    font-family: sans-serif;
+}
+
+.loading-screen.fade {
+    position: absolute;
+    z-index: 1;
+    animation: fadeOut 1s linear;
+    -o-animation: fadeOut 1s linear;
+    -ms-animation: fadeOut 1s linear;
+    -webkit-animation: fadeOut 1s linear;
+    -moz-animation: fadeOut 1s linear;
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+        top: 0;
+        height: 100%;
+    }
+    100% {
+        opacity: 0;
+        top: 50%;
+        height: 0;
+    }
+}
+
+.loading-screen .loading-label {
+    margin: auto auto 50px auto;
+    position: relative;
+}
+
+.loading-screen .loading-progress {
+    width: 80%;
+    margin: 0 auto auto auto;
+    position: relative;
+}
+
+.loading-screen .loading-progress .progress-bar {
+    height: 2px;
+    position: relative;
+    overflow: visible;
+    background-color: #9e9e9e;
+}
+
+.loading-screen .loading-progress .progress-bar-start {
+}
+
+.loading-screen .loading-progress .progress-bar-end {
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    top: -18px;
+    right: 0;
+    z-index: -1;
+    background-image: url('../assets/item/carrot.gif');
+}
+
+.loading-screen .loading-progress .progress-icon {
+    width: 35px;
+    height: 28px;
+    position: absolute;
+    top: -23px;
+    right: -4px;
+    background-image: url('../assets/enemy/lunatic.gif');
+    background-repeat: no-repeat;
+    transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+}
