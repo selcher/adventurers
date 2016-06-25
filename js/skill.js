@@ -12,6 +12,7 @@ function Skill( info ) {
 
         this.activated = false;
         this.autoActivationChance = info.autoActivationChance || 0;
+        this.castTime = info.castTime || 0;
         this.action = info.action || function () {};
     }
 
@@ -41,6 +42,10 @@ Skill.prototype.disable = function disable() {
 
 Skill.prototype.getRequiredLevel = function getRequiredLevel() {
     return this.requiredLevel;
+};
+
+Skill.prototype.getCastTime = function getCastTime() {
+    return this.castTime;
 };
 
 Skill.prototype.setActivated = function setActivated( activated ) {

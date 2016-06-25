@@ -84,12 +84,6 @@
 
     function normalBattle( players, locationData, battleDone ) {
 
-        message.setType( "battle" );
-        showMessage(
-            locationData.name,
-            function() {},
-            3000 );
-
         var game = this;
 
         // Init Players
@@ -133,6 +127,7 @@
                     var activatedSkill = currentPlayer.getActivatedSkill();
                     var skillTargets = getSkillTargets(
                         currentPlayer, players, enemies );
+                    var castTime = activatedSkill.getCastTime();
 
                     var messageType = [
                         currentPlayer.name,
@@ -144,10 +139,14 @@
                     showMessage(
                         activatedSkill.getName(),
                         function() {},
-                        3000
+                        castTime
                     );
 
+                    pause();
                     currentPlayer.activateSkill( skillTargets );
+                    setTimeout( function() {
+                        resume();
+                    }, castTime );
                 }
             });
 
@@ -193,16 +192,25 @@
                 game.setPlayers( players );
             }
 
-        });
-    }
+        };
 
-    function bossBattle( players, locationData, battleDone ) {
+        setBattleLoop( gameLoop );
+        requestAnimationFrame( gameLoop );
 
         message.setType( "battle" );
         showMessage(
             locationData.name,
-            function() {},
+            function() {
+                resume();
+            },
             3000 );
+
+        setTimeout(function() {
+            pause();
+        });
+    }
+
+    function bossBattle( players, locationData, battleDone ) {
 
         var game = this;
         var victory = false;
@@ -379,6 +387,21 @@
                     battleDone,
                     3000 );
             }
+        };
+
+        setBattleLoop( gameLoop );
+        requestAnimationFrame( gameLoop );
+
+        message.setType( "battle" );
+        showMessage(
+            locationData.name,
+            function() {
+                resume();
+            },
+            3000 );
+
+        setTimeout(function() {
+            pause();
         });
     }
 

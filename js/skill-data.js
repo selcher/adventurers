@@ -1,5 +1,8 @@
 (function( w, utils ) {
 
+    /**
+     * Private variables
+     */
     var skills = {
         "bash": {
             "id": "bash",
@@ -7,6 +10,7 @@
             "enabled": false,
             "requiredLevel": 5,
             "autoActivationChance": 0.1,
+            "castTime": 500,
             "targetType": "enemy",
             "multipleTarget": false,
             "action": function( caster, targets ) {
@@ -21,6 +25,7 @@
             "enabled": false,
             "requiredLevel": 10,
             "autoActivationChance": 0.1,
+            "castTime": 500,
             "targetType": "enemy",
             "multipleTarget": true,
             "action": function( caster, targets ) {
@@ -36,6 +41,7 @@
             "enabled": false,
             "requiredLevel": 15,
             "autoActivationChance": 0.1,
+            "castTime": 1000,
             "targetType": "self",
             "multipleTarget": false,
             "action": function( caster, targets ) {
@@ -49,6 +55,7 @@
             "enabled": false,
             "requiredLevel": 5,
             "autoActivationChance": 0.1,
+            "castTime": 500,
             "targetType": "enemy",
             "multipleTarget": false,
             "action": function( caster, targets ) {
@@ -63,6 +70,7 @@
             "enabled": false,
             "requiredLevel": 10,
             "autoActivationChance": 0.1,
+            "castTime": 500,
             "targetType": "enemy",
             "multipleTarget": true,
             "action": function( caster, targets ) {
@@ -78,6 +86,7 @@
             "enabled": false,
             "requiredLevel": 15,
             "autoActivationChance": 0.1,
+            "castTime": 1000,
             "targetType": "self",
             "multipleTarget": false,
             "action": function( caster, targets ) {
@@ -90,6 +99,7 @@
             "enabled": false,
             "requiredLevel": 5,
             "autoActivationChance": 0.1,
+            "castTime": 500,
             "targetType": "enemy",
             "multipleTarget": false,
             "action": function( caster, targets ) {
@@ -104,6 +114,7 @@
             "enabled": false,
             "requiredLevel": 10,
             "autoActivationChance": 0.1,
+            "castTime": 500,
             "targetType": "enemy",
             "multipleTarget": true,
             "action": function( caster, targets ) {
@@ -119,6 +130,7 @@
             "enabled": false,
             "requiredLevel": 15,
             "autoActivationChance": 0.1,
+            "castTime": 1000,
             "targetType": "self",
             "multipleTarget": false,
             "action": function( caster, targets ) {
@@ -132,6 +144,7 @@
             "enabled": false,
             "requiredLevel": 5,
             "autoActivationChance": 0.1,
+            "castTime": 1000,
             "targetType": "player",
             "multipleTarget": false,
             "action": function( caster, targets ) {
@@ -146,6 +159,7 @@
             "enabled": false,
             "requiredLevel": 10,
             "autoActivationChance": 0.1,
+            "castTime": 2000,
             "targetType": "player",
             "multipleTarget": false,
             "action": function( caster, target ) {
@@ -157,6 +171,7 @@
             "enabled": false,
             "requiredLevel": 15,
             "autoActivationChance": 0.1,
+            "castTime": 2000,
             "targetType": "player",
             "multipleTarget": true,
             "action": function( caster, target ) {
@@ -169,6 +184,9 @@
         return skills[ name ];
     }
 
+    /**
+     * Public api
+     */
     window.skillDataApi = {
         "get": get
     };
