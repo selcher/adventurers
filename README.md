@@ -8,12 +8,12 @@ Features:
 - auto save
 - map
 - skill
+- bg music
 
 Planned Features:
-- music
 - shop (unlock)
 - items
-- achievements
+- quests / achievements
 
 Release:
 - web
