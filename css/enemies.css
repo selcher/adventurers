@@ -2,7 +2,7 @@
 
 /* Status */
 .player-avatar .avatar.enemy.regen {
-    opacity: 0;
+    opacity: 0.2;
 }
 
 /* Poring Field */

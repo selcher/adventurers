@@ -169,7 +169,7 @@
     function resetPlayers( playerList ) {
 
         utils.each( playerList, function( player ) {
-            player.resetStatus();
+            player.reset();
         });
     }
 
@@ -233,9 +233,9 @@
 
     function resetEnemy( enemy, newEnemyName ) {
 
-        return new EnemyClass(
-            getEnemyData( newEnemyName ),
-            enemy.renderer
+        return createEnemy(
+            newEnemyName,
+            enemy.renderer.getDOM()
         );
     }
 

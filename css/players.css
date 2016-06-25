@@ -16,7 +16,6 @@
 }
 
 /* Status */
-/*.player-avatar .avatar.attacked {*/
 .player-avatar .avatar.attacked {
     filter: hue-rotate(300deg);
     -webkit-filter: hue-rotate(300deg);
@@ -43,35 +42,9 @@
 }
 
 @keyframes attacked { /* CSS3 */
-	10%, 90%       { -webkit-transform: translateX(-2px); }
-	20%, 80%       { -webkit-transform: translateX(2px); }
-	30%, 50%, 70%  { -webkit-transform: translateX(-8px); }
-	40%, 60%       { -webkit-transform: translateX(8px); }
+	10%, 90%       { -webkit-transform: translateX(-1px); }
+	20%, 80%       { -webkit-transform: translateX(0px); }
+	30%, 50%, 70%  { -webkit-transform: translateX(1px); }
+	40%, 60%       { -webkit-transform: translateX(0px); }
 }
 
-@keyframes attack { /* CSS3 */
-	0%   { -webkit-transform: translateX(0px); }
-	40%   { -webkit-transform: translateX(0px); }
-	50%  { -webkit-transform: translateX(20px); }
-	60%  { -webkit-transform: translateX(0px); }
-	100% { -webkit-transform: translateX(0px); }
-}
-@-moz-keyframes attack { /* Firefox */
-    0%   { -webkit-transform: translateX(0px); }
-	40%   { -webkit-transform: translateX(0px); }
-	50%  { -webkit-transform: translateX(20px); }
-	60%  { -webkit-transform: translateX(0px); }
-	100% { -webkit-transform: translateX(0px); }
-}
-@-webkit-keyframes attack { /* Webkit */
-    0%   { -webkit-transform: translateX(0px); }
-	40%   { -webkit-transform: translateX(0px); }
-	50%  { -webkit-transform: translateX(20px); }
-	60%  { -webkit-transform: translateX(0px); }
-	100% { -webkit-transform: translateX(0px); }
-}
-.player-avatar .attack {
-	animation:         attack 1s infinite; /* CSS3 */
-	-moz-animation:    attack 1s infinite; /* Firefox */
-	-webkit-animation: attack 1s infinite; /* Webkit */
-}
