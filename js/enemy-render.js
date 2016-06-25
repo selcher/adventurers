@@ -16,10 +16,11 @@
     };
 
     EnemyRender.prototype.update = function update( enemy ) {
+        var enemyState = enemy.state;
         var content = '<div class="info">' +
-                     renderHp( enemy.hp, enemy.maxHp ) +
+                     renderHp( enemyState, enemy.hp, enemy.maxHp ) +
                 '</div>' +
-                    renderAvatar( enemy.name, enemy.state,
+                    renderAvatar( enemy.name, enemyState,
                         enemy.atkSpeed, enemy.atkSpeedCounter );
 
         this.dom.className = "player-avatar";
@@ -30,10 +31,11 @@
     /**
      * Private methods
      */
-    function renderHp( hp, maxHp ) {
-        var currentHp = ( hp / maxHp ) * 100 + "%";
-        var result = '<div class="hp">' +
-            '<div class="current" style="width:' + currentHp + ';"></div>' +
+    function renderHp( state, hp, maxHp ) {
+        var currentHp = ( hp / maxHp ) * 100;
+        var amount = currentHp < 25 ? "low" : "";
+        var result = '<div class="hp ' + state + '">' +
+            '<div class="current ' + amount + '" style="width:' + currentHp + '%;"></div>' +
             '<div class="max"></div>' +
         '</div>';
 

@@ -50,6 +50,10 @@
     background-color: #7FFF00;
 }
 
+.player-avatar .info .hp .current.low {
+    background-color: #ed143d;
+}
+
 .player-avatar .info .hp .max {
     position: absolute;
     top: 0;
