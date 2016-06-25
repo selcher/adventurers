@@ -9,3 +9,14 @@
     - auto save
     - map
     - player skills
+
+#### 1.1.0
+- Fixed:
+    - reset enemy
+- Implemented:
+    - preloading
+    - loading screen
+    - background music
+    - skill cast time
+    - activated skill list
+    - status effects (partial)
