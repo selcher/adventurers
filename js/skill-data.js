@@ -1,4 +1,4 @@
-(function( w, utils ) {
+(function( w, utils, statusRegistry ) {
 
     /**
      * Private variables
@@ -90,7 +90,8 @@
             "targetType": "self",
             "multipleTarget": false,
             "action": function( caster, targets ) {
-                // TODO
+                var target = targets[0];
+                target.addStatus( statusRegistry.get( "vulture-eye" ) );
             }
         },
         "fire-bolt": {
@@ -162,11 +163,13 @@
             "castTime": 2000,
             "targetType": "player",
             "multipleTarget": false,
-            "action": function( caster, target ) {
-                // TODO
+            "action": function( caster, targets ) {
+                var target = targets[0];
+                target.addStatus( statusRegistry.get( "blessing" ) );
             }
         },
         "angelus": {
+            "id": "angelus",
             "name": "Angelus",
             "enabled": false,
             "requiredLevel": 15,
@@ -174,15 +177,14 @@
             "castTime": 2000,
             "targetType": "player",
             "multipleTarget": true,
-            "action": function( caster, target ) {
-                // TODO
+            "action": function( caster, targets ) {
+                utils.each( targets, function( target ) {
+                    target.addStatus( statusRegistry.get( "angelus" ) );
+                });
             }
         }
     };
 
-    function get( name ) {
-        return skills[ name ];
-    }
 
     /**
      * Public api
@@ -191,4 +193,12 @@
         "get": get
     };
 
-})( window, window.utilsApi );
+
+    /**
+     * Private methods
+     */
+    function get( name ) {
+        return skills[ name ];
+    }
+
+})( window, window.utilsApi, window.statusRegistryApi );

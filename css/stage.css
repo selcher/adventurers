@@ -27,10 +27,13 @@
     position: absolute;
     bottom: 0;
     left: 0;
+    z-index: 1;
     width: 100%;
     padding: 5px;
     box-sizing: border-box;
 }
+
+/* HP */
 
 .player-avatar .info .hp {
     position: relative;
@@ -57,10 +60,24 @@
     opacity: 0.2;
 }
 
+.player-avatar .info .hp.attacked {
+    filter: blur(1px);
+    -webkit-filter: blur(1px);
+}
+
+/* Avatar */
+
+.player-avatar .avatar-container {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
 .player-avatar .avatar {
     position: absolute;
     top: 0;
     left: 0;
+    z-index: 1;
     width: 100%;
     height: 100%;
     margin: auto;
@@ -68,6 +85,14 @@
     background-position: 50% 50%;
     background-size: initial;
     background-repeat: no-repeat;
+}
+
+/* Avatar Status */
+
+.avatar-status-container {
+    width: 100%;
+    height: 100%;
+    position: absolute;
 }
 
 /* Locations */

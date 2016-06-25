@@ -104,6 +104,8 @@
         var loadDeferred = jq.Deferred();
         var userData = getStorageData();
 
+        userData.player = formatPlayerData( userData.player );
+
         utils.each(userData.map, function( locationId ) {
             mapRegistry.unlock( locationId );
         });

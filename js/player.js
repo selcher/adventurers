@@ -36,6 +36,13 @@ function Player( status, renderer ) {
         // Status (poisoned, regenerating, casting, skill effects, ...)
         // TODO: create dict for status info (name, duration)
         this.status = {};
+        // TODO: create attribute class ?!
+        this.bonusEffects = {
+            "hp": 0,
+            "mp": 0,
+            "atk": 0,
+            "def": 0
+        };
 
         this.zeny = status.zeny || 0;
 
@@ -47,13 +54,7 @@ function Player( status, renderer ) {
     }
 }
 
-Player.prototype.getLevel = function getLevel() {
-    return this.level;
-};
-
-Player.prototype.setLevel = function setLevel( level ) {
-    this.level = level;
-};
+/** HP **/
 
 Player.prototype.getMaxHp = function getMaxHp() {
     return this.maxHp;
@@ -73,6 +74,12 @@ Player.prototype.setHp = function setHp( hp ) {
         ( hp < 0 ? 0 : hp);
 };
 
+Player.prototype.getTotalHp = function getTotalHp() {
+    return this.getHp() + this.getBonus( "hp" );
+};
+
+/** MP **/
+
 Player.prototype.getMaxMp = function getMaxMp() {
     return this.maxMp;
 };
@@ -90,6 +97,220 @@ Player.prototype.setMp = function setMp( mp ) {
     this.mp = mp > this.maxMp ? this.maxMp :
         ( mp < 0 ? 0 : mp);
 };
+
+Player.prototype.getTotalMp = function getTotalMp() {
+    return this.getMp() + this.getBonus( "mp" );
+};
+
+/** Regen **/
+
+Player.prototype.regen = function regen() {
+    this.setHp( this.getHp() + this.getRegenRate() );
+};
+
+Player.prototype.getRegenRate = function getRegenRate() {
+    return Math.floor( this.getMaxHp() / this.reviveDelay );
+};
+
+/** Defense **/
+
+Player.prototype.getDefense = function getDefense() {
+    return this.def;
+};
+
+Player.prototype.setDefense = function setDefense( newDefense ) {
+    this.def = newDefense;
+}
+
+Player.prototype.getTotalDefense = function getTotaldefense() {
+    return this.getDefense() + this.getBonus( "def" );
+};
+
+/** Attack **/
+
+Player.prototype.getAttack = function getAttack() {
+    return this.atk;
+};
+
+Player.prototype.setAttack = function setAttack( newAttack ) {
+    this.atk = newAttack;
+};
+
+Player.prototype.getTotalAttack = function getTotalAttack() {
+    return this.getAttack() + this.getBonus( "atk" );
+};
+
+Player.prototype.attack = function attack( enemy ) {
+    if ( enemy && enemy.isAlive() ) {
+        enemy.attacked( this.getTotalAttack() );
+    }
+};
+
+Player.prototype.attacked = function attacked( damage ) {
+    var defense = this.getTotalDefense();
+    var totalDamage = damage > defense ? damage - defense : 1;
+
+    this.setHp( this.getTotalHp() - totalDamage );
+    this.attackedDelayCounter = 0;
+
+    var state = this.getState();
+
+    if ( state !== "attacked" ) {
+        this.prevState = state;
+        this.setState( "attacked" );
+    }
+};
+
+/** Bonus stats **/
+
+Player.prototype.getBonus = function getBonus( stat ) {
+    return this.bonusEffects[ stat ];
+};
+
+Player.prototype.setBonus = function setBonus( stat, value ) {
+    this.bonusEffects[ stat ] = value;
+};
+
+/** Skill **/
+
+Player.prototype.getActivatedSkill = function getActivatedSkill() {
+    return this.activatedSkill;
+};
+
+Player.prototype.setActivatedSkill = function setActivatedSkill( skill ) {
+    this.activatedSkill = skill;
+};
+
+Player.prototype.updateActivatedSkill = function updateActivatedSkill() {
+    var skill = null;
+
+    this.setActivatedSkill( null );
+
+    for ( var i in this.skills ) {
+
+        skill = this.skills[ i ];
+
+        if ( skill.isEnabled() ) {
+
+            skill.autoActivate();
+
+            if ( skill.isActivated() ) {
+                this.setActivatedSkill( skill );
+            }
+        }
+    }
+};
+
+Player.prototype.activateSkill = function activateSkill( targets ) {
+    var activatedSkill = this.getActivatedSkill();
+
+    for ( var i = targets.length; i--; ) {
+        activatedSkill.activate( this, targets );
+    }
+};
+
+Player.prototype.updateSkills = function updateSkills() {
+
+    for ( var i in this.skills ) {
+
+        if ( this.level >= this.skills[ i ].getRequiredLevel() ) {
+            this.skills[ i ].enable();
+        }
+    }
+};
+
+/** Status **/
+
+Player.prototype.addStatus = function addStatus( status ) {
+    var statusId = status ? status.getId() : "";
+
+    if ( !this.status[ statusId ] ) {
+        this.status[ statusId ] = status;
+    }
+};
+
+Player.prototype.removeStatus = function removeStatus( status ) {
+    delete this.status[ status.getId() ];
+};
+
+Player.prototype.updateStatus = function updateStatus() {
+    var currentStatus = null;
+
+    for ( var i in this.status ) {
+
+        currentStatus = this.status[ i ];
+        currentStatus.update( this );
+
+        if ( !currentStatus.isActive() ) {
+            this.removeStatus( currentStatus );
+        }
+    }
+};
+
+Player.prototype.resetStatus = function resetStatus() {
+    this.status = {};
+    this.bonusEffects = {
+        "hp": 0,
+        "mp": 0,
+        "atk": 0,
+        "def": 0
+    };
+};
+
+/** Zeny **/
+
+Player.prototype.getZeny = function getZeny() {
+    return this.zeny;
+};
+
+/** Experience **/
+
+Player.prototype.getExperience = function getExperience() {
+    return this.experience;
+};
+
+Player.prototype.getMaxExperience = function getMaxExperience() {
+    return this.maxExperience;
+};
+
+Player.prototype.setMaxExperience = function setMaxExperience( exp ) {
+    this.maxExperience = exp;
+};
+
+/** Level **/
+
+Player.prototype.getLevel = function getLevel() {
+    return this.level;
+};
+
+Player.prototype.setLevel = function setLevel( level ) {
+    this.level = level;
+};
+
+Player.prototype.canLevelUp = function canLevelUp( exp ) {
+    return exp >= this.getMaxExperience();
+};
+
+Player.prototype.levelUp = function levelUp() {
+    var newMaxHp = this.getMaxHp() + this.increase.hp;
+    var newMaxMp = this.getMaxMp() + this.increase.mp;
+    var newAttack = this.getAttack() + this.increase.atk;
+    var newDefense = this.getDefense() + this.increase.def;
+    var newMaxExp = Math.floor( 1.63 * this.getMaxExperience() );
+
+    this.setLevel( this.getLevel() + 1 );
+    this.setMaxHp( newMaxHp );
+    this.setMaxMp( newMaxMp );
+    this.setHp( newMaxHp );
+    this.setMp( newMaxMp );
+    this.setAttack( newAttack );
+    this.setDefense( newDefense );
+    this.setMaxExperience( newMaxExp );
+
+    this.updateSkills();
+};
+
+/** State **/
 
 Player.prototype.isAlive = function isAlive() {
     return !( this.isState( "regen" ) || this.isState( "dead" ) );
@@ -175,7 +396,7 @@ Player.prototype.updateState = function updateState() {
     }
 };
 
-Player.prototype.resetStatus = function resetStatus() {
+Player.prototype.reset = function reset() {
     this.setState( "standby" );
     this.setHp( this.getMaxHp() );
     this.setMp( this.getMaxMp() );
@@ -183,141 +404,14 @@ Player.prototype.resetStatus = function resetStatus() {
     this.atkDelayCounter = 0;
     this.atkSpeedCounter = 0;
     this.activatedSkill = null;
+    this.resetStatus();
 };
 
 Player.prototype.disable = function disable() {
     this.setState( "disabled" );
 };
 
-Player.prototype.regen = function regen() {
-    this.setHp( this.getHp() + this.getRegenRate() );
-};
-
-Player.prototype.getRegenRate = function getRegenRate() {
-    return Math.floor( this.getMaxHp() / this.reviveDelay );
-};
-
-Player.prototype.getDefense = function getDefense() {
-    return this.def;
-};
-
-Player.prototype.setDefense = function setDefense( newDefense ) {
-    this.def = newDefense;
-}
-
-Player.prototype.getAttack = function getAttack() {
-    return this.atk;
-};
-
-Player.prototype.setAttack = function setAttack( newAttack ) {
-    this.atk = newAttack;
-};
-
-Player.prototype.attack = function attack( enemy ) {
-    if ( enemy && enemy.isAlive() ) {
-        enemy.attacked( this.getAttack() );
-    }
-};
-
-Player.prototype.attacked = function attacked( damage ) {
-    var defense = this.getDefense();
-    var totalDamage = damage > defense ? damage - defense : 1;
-
-    this.setHp( this.getHp() - totalDamage );
-    this.attackedDelayCounter = 0;
-
-    var state = this.getState();
-
-    if ( state !== "attacked" ) {
-        this.prevState = state;
-        this.setState( "attacked" );
-    }
-};
-
-Player.prototype.getActivatedSkill = function getActivatedSkill() {
-    return this.activatedSkill;
-};
-
-Player.prototype.setActivatedSkill = function setActivatedSkill( skill ) {
-    this.activatedSkill = skill;
-};
-
-Player.prototype.updateActivatedSkill = function updateActivatedSkill() {
-    var skill = null;
-
-    this.setActivatedSkill( null );
-
-    for ( var i in this.skills ) {
-
-        skill = this.skills[ i ];
-
-        if ( skill.isEnabled() ) {
-
-            skill.autoActivate();
-
-            if ( skill.isActivated() ) {
-                this.setActivatedSkill( skill );
-            }
-        }
-    }
-};
-
-Player.prototype.activateSkill = function activateSkill( targets ) {
-    var activatedSkill = this.getActivatedSkill();
-
-    for ( var i = targets.length; i--; ) {
-        activatedSkill.activate( this, targets );
-    }
-};
-
-Player.prototype.updateSkills = function updateSkills() {
-
-    for ( var i in this.skills ) {
-
-        if ( this.level >= this.skills[ i ].getRequiredLevel() ) {
-            this.skills[ i ].enable();
-        }
-    }
-};
-
-Player.prototype.getZeny = function getZeny() {
-    return this.zeny;
-};
-
-Player.prototype.getExperience = function getExperience() {
-    return this.experience;
-};
-
-Player.prototype.getMaxExperience = function getMaxExperience() {
-    return this.maxExperience;
-};
-
-Player.prototype.setMaxExperience = function setMaxExperience( exp ) {
-    this.maxExperience = exp;
-};
-
-Player.prototype.canLevelUp = function canLevelUp( exp ) {
-    return exp >= this.getMaxExperience();
-};
-
-Player.prototype.levelUp = function levelUp() {
-    var newMaxHp = this.getMaxHp() + this.increase.hp;
-    var newMaxMp = this.getMaxMp() + this.increase.mp;
-    var newAttack = this.getAttack() + this.increase.atk;
-    var newDefense = this.getDefense() + this.increase.def;
-    var newMaxExp = Math.floor( 1.63 * this.getMaxExperience() );
-
-    this.setLevel( this.getLevel() + 1 );
-    this.setMaxHp( newMaxHp );
-    this.setMaxMp( newMaxMp );
-    this.setHp( newMaxHp );
-    this.setMp( newMaxMp );
-    this.setAttack( newAttack );
-    this.setDefense( newDefense );
-    this.setMaxExperience( newMaxExp );
-
-    this.updateSkills();
-};
+/** Render **/
 
 Player.prototype.getDOM = function getDOM() {
     return this.renderer.getDOM();
@@ -327,7 +421,10 @@ Player.prototype.render = function render() {
     this.renderer.update( this );
 };
 
+/** Update **/
+
 Player.prototype.update = function update() {
+    this.updateStatus();
     this.updateState();
     this.render();
 };
