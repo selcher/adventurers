@@ -68,6 +68,11 @@
                     'Monster Images',
                     'http://ratemyserver.net/index.php?page=map_db'
                 ),
+                '<br/>',
+                renderLink(
+                    'Background Music',
+                    'https://harumusics.blogspot.com/2014/11/ragnarok-online-complete-soundtrack.html'
+                ),
             '</div>',
             '<div class="' + backButton.className + '">',
                 backButton.label,
