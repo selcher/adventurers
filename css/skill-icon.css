@@ -1,0 +1,47 @@
+.double-strafe {
+    background-image: url('../assets/class/archer/ac_double.gif');
+}
+
+.arrow-shower {
+    background-image: url('../assets/class/archer/ac_shower.gif');
+}
+
+.vulture-eye {
+    background-image: url('../assets/class/archer/ac_vulture.gif');
+}
+
+.heal {
+    background-image: url('../assets/class/acolyte/al_heal.gif');
+}
+
+.blessing {
+    background-image: url('../assets/class/acolyte/al_blessing.gif');
+}
+
+.angelus {
+    background-image: url('../assets/class/acolyte/al_angelus.gif');
+}
+
+.fire-bolt {
+    background-image: url('../assets/class/mage/mg_firebolt.gif');
+}
+
+.meteor-shower {
+    background-image: url('../assets/class/mage/wz_meteor.gif');
+}
+
+.mp-recovery {
+    background-image: url('../assets/class/mage/mg_srecovery.gif');
+}
+
+.bash {
+    background-image: url('../assets/class/swordsman/sm_bash.gif');
+}
+
+.magnum-break {
+    background-image: url('../assets/class/swordsman/sm_magnum.gif');
+}
+
+.hp-recovery {
+    background-image: url('../assets/class/swordsman/sm_recovery.gif');
+}
