@@ -13,6 +13,7 @@
         this.prevAvatarStatus = [];
 
         this.hpDOM = null;
+        this.statusIconsDOM = null;
         this.avatarDOM = null;
         this.avatarPlayerDOM = null;
 
@@ -35,6 +36,7 @@
         var playerState = player.state;
         var content = [
             '<div class="info">',
+                renderStatusIcons( player.status ),
                 renderHp( playerState, player.hp, player.maxHp ),
             '</div>',
             renderAvatar( player.name, playerState, player.atkSpeed, player.atkSpeedCounter ),
@@ -49,6 +51,7 @@
         this.prevAvatarStatus = utils.getKeys( player.status );
 
         this.hpDOM = this.dom.querySelector( ".hp" );
+        this.statusIconsDOM = this.dom.querySelector( ".status-icon-container" );
         this.avatarDOM = this.dom.querySelector( ".avatar-container" );
         this.avatarPlayerDOM = this.dom.querySelector( "." + player.name + ".avatar" );
     };
@@ -70,6 +73,7 @@
         }
 
         if ( this.prevAvatarStatus.length !== utils.getKeys( player.status ).length ) {
+            this.statusIconsDOM.innerHTML = renderStatusIconsList( player.status );
             updateAvatarStatus( this.avatarDOM, this.prevAvatarStatus, player.status );
 
             // Reference avatarPlayerDOM again since avatarDOM.innerHTML was used
@@ -85,6 +89,26 @@
     /**
      * Private methods
      */
+    function renderStatusIcons( statusDict ) {
+        var result = [
+            '<div class="status-icon-container">',
+                renderStatusIconsList( statusDict ),
+            '</div>'
+        ].join( "" );
+
+        return result;
+    }
+
+    function renderStatusIconsList( statusDict ) {
+        var result = "";
+
+        for ( var status in statusDict ) {
+            result += '<div class="status-icon ' + status + '"></div>';
+        }
+
+        return result;
+    }
+
     function renderHp( state, hp, maxHp ) {
         var result = '<div class="hp ' + state  + '">' +
             renderHpBar( hp, maxHp ) +

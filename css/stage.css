@@ -65,6 +65,23 @@
     -webkit-filter: blur(1px);
 }
 
+/* Status */
+
+.player-avatar .info .status-icon-container {
+    position: relative;
+    width: 100px;
+    margin: auto;
+    display: table-cell;
+    vertical-align: bottom;
+}
+
+.player-avatar .info .status-icon-container .status-icon {
+    width: 16px;
+    height: 16px;
+    margin-top: 2px;
+    background-size: 100%;
+}
+
 /* Avatar */
 
 .player-avatar .avatar-container {
