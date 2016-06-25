@@ -6,6 +6,7 @@
     var container = null;
     var title = "";
     var type = "";
+    var timer = null;
 
     /**
      * Button Format:
@@ -67,11 +68,31 @@
     }
 
     function show() {
+
+        container.classList.add( "slideIn" );
         container.classList.remove( "hide" );
+
+        if ( timer ) {
+            clearTimeout( timer );
+        }
+
+        timer = setTimeout( function() {
+            container.classList.remove( "slideIn" );
+        }, 200 );
     }
 
     function hide() {
-        container.classList.add( "hide" );
+
+        container.classList.add( "slideOut" );
+
+        if ( timer ) {
+            clearTimeout( timer );
+        }
+
+        timer = setTimeout( function() {
+            container.classList.add( "hide" );
+            container.classList.remove( "slideOut" );
+        }, 200 );
     }
 
     function render( message ) {
