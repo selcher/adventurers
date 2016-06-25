@@ -178,7 +178,7 @@
 
                 } else if ( currentEnemyState === "alive" ) {
 
-                    currentEnemy = game.resetEnemy(
+                    enemies[ i ] = game.resetEnemy(
                         currentEnemy,
                         enemiesData[ utils.getRandom( enemiesData ) ]
                     );
