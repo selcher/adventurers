@@ -68,8 +68,8 @@
     function loadGameData() {
 
         var loadDeferred = jq.Deferred();
-        var loadMapDef = getDataRequest( mapDataUrl );
-        var loadEnemyDef = getDataRequest( enemyDataUrl );
+        var loadMapDef = utils.getData( mapDataUrl );
+        var loadEnemyDef = utils.getData( enemyDataUrl );
 
         jq.when( loadMapDef, loadEnemyDef ).done(
             function( mapDataResult, enemyDataResult ) {
@@ -117,7 +117,7 @@
     function loadDefaultUserData() {
 
         var loadDeferred = jq.Deferred();
-        var loadPlayerDef = getDataRequest( playerDataUrl );
+        var loadPlayerDef = utils.getData( playerDataUrl );
 
         jq.when( loadPlayerDef ).done(
             function( playerDataResult ) {
@@ -136,27 +136,6 @@
         );
 
         return loadDeferred;
-    }
-
-
-    function getDataRequest( url ) {
-
-        var deferred = jq.Deferred();
-
-        jq.ajax(
-            url,
-            {
-                "type": "GET",
-                "success": function ( data, status, xhr ) {
-                    deferred.resolve( data );
-                },
-                "error": function ( xhr, status ) {
-                    deferred.reject( null );
-                }
-            }
-        );
-
-        return deferred;
     }
 
 

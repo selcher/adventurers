@@ -1,6 +1,6 @@
 // Utils Api
 
-(function( w, doc, ObjectApi, MathApi, JSONApi ) {
+(function( w, doc, ObjectApi, MathApi, JSONApi, jq ) {
 
     var floor = MathApi.floor;
     var random = MathApi.random;
@@ -47,6 +47,27 @@
             return JSONApi.stringify( json );
         },
 
+        // Requests
+        "getData": function getData( url ) {
+
+            var deferred = jq.Deferred();
+
+            jq.ajax(
+                url,
+                {
+                    "type": "GET",
+                    "success": function ( data, status, xhr ) {
+                        deferred.resolve( data );
+                    },
+                    "error": function ( xhr, status ) {
+                        deferred.reject( null );
+                    }
+                }
+            );
+
+            return deferred;
+        },
+
         // UI
         "createElement": function createElement( tag, className ) {
 
@@ -61,4 +82,4 @@
 
     };
 
-})( window, document, Object, Math, JSON );
+})( window, document, Object, Math, JSON, $ );
