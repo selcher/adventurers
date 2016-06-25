@@ -1,4 +1,4 @@
-(function ( w, data, game, message, gameContent, controls, credits ) {
+(function ( w, data, game, message, audio, gameContent, controls, credits ) {
 
     /**
      * Private variables
@@ -68,7 +68,6 @@
     }
 
     function onClickNewGame() {
-        hide();
 
         if ( data.hasSavedData() ) {
             showResetSavedGameMessage();
@@ -91,10 +90,7 @@
                 "id": "cancel-button",
                 "class": "button cancel",
                 "text": "Cancel",
-                "click": function() {
-                    hideResetSavedGameMessage();
-                    show();
-                }
+                "click": hideResetSavedGameMessage
             }
         ]);
         message.render( "Saved game data will be reset." ).show();
@@ -106,26 +102,33 @@
     }
 
     function startNewGame() {
+
         var loadData = data.loadDefaultUserData();
+
         loadData.then( function( userData ) {
             hideResetSavedGameMessage();
-            data.enableAutoSave();
-            game.setData( userData );
-            gameContent.show();
-            controls.clickMap();
+            startGame( userData );
         });
     }
 
     function onClickContinue() {
-        hide();
-        data.enableAutoSave();
 
         var loadData = data.loadSavedUserData();
+
         loadData.then( function( userData ) {
-            game.setData( userData );
-            gameContent.show();
-            controls.clickMap();
+            startGame( userData );
         });
+    }
+
+    function startGame( userData ) {
+
+        audioApi.pause();
+        data.enableAutoSave();
+        game.setData( userData );
+
+        hide();
+        gameContent.show();
+        controls.clickMap();
     }
 
     function onClickCredits() {
@@ -139,13 +142,28 @@
     function render() {
 
         var content = [
+            renderMainMenuTitle(),
+            renderMainMenuButtons()
+        ].join( "" );
+
+        renderContent( container, content );
+
+        return this;
+    }
+
+    function renderMainMenuTitle() {
+
+        return [
             '<div class="main-menu-label">',
                 '<h1 class="header">ADVENTURERS</h1>',
                 '<h4 class="sub-header">AUTO RPG</h4>',
             '</div>'
         ].join( "" );
+    }
 
-        content += '<div class="button-container">';
+    function renderMainMenuButtons() {
+
+        var content = '<div class="button-container">';
 
         for ( var i in menu ) {
 
@@ -160,9 +178,7 @@
 
         content += "</div>";
 
-        renderContent( container, content );
-
-        return this;
+        return content;
     }
 
     function show() {
@@ -181,6 +197,7 @@
     window.dataApi,
     window.gameApi,
     window.messageApi,
+    window.audioApi,
     window.contentApi,
     window.controlsApi,
     window.creditsApi

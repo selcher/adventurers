@@ -8,6 +8,7 @@
     mainMenuApi,
     creditsApi,
     messageApi,
+    audioApi,
     topMenuApi,
     contentApi,
     controlsApi ) {
@@ -107,6 +108,11 @@
             var credits = doc.querySelector( ".credits" );
             creditsApi.init( credits ).render().hide();
 
+            // Audio
+            var audio = doc.querySelector( ".audio" );
+            audioApi.init( audio ).render();
+            audioApi.play( "title" );
+
             // Save Game Data on page close / refresh
             w.addEventListener( "beforeunload", function( e ) {
                 if ( dataApi.isAutoSaveEnabled() ) {
@@ -129,6 +135,7 @@
     window.mainMenuApi,
     window.creditsApi,
     window.messageApi,
+    window.audioApi,
     window.topMenuApi,
     window.contentApi,
     window.controlsApi

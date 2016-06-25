@@ -1,6 +1,6 @@
 // Game controls
 
-(function( w, game, mapRegistry, topMenu, mapMenu, stage, statusMenu ) {
+(function( w, game, mapRegistry, audio, topMenu, mapMenu, stage, statusMenu ) {
 
     /**
      * Private Variables
@@ -71,6 +71,7 @@
 
     function onClickMap() {
 
+        audio.play( "map" );
         game.stopBattle();
 
         setTimeout(
@@ -90,6 +91,7 @@
         mapMenu.setActions({
             onLocationSelected: function( locationId ) {
                 showTopMenu();
+                audio.play( locationId );
                 stage.render( locationId ).show();
                 game.setLocation( locationId );
                 game.startBattle( "normal", locationId,
@@ -116,6 +118,7 @@
 
         setTimeout(
             function () {
+                audio.play( "status" );
                 showTopMenu();
                 showStatusMenu();
                 mapMenu.hide();
@@ -151,6 +154,7 @@
             var locationId = currentLocation.id;
 
             showTopMenu();
+            audio.play( "boss" );
             stage.render( locationId ).show();
             statusMenu.hide();
             mapMenu.hide();
@@ -192,6 +196,7 @@
 })( window,
     window.gameApi,
     window.mapRegistryApi,
+    window.audioApi,
     window.topMenuApi,
     window.mapMenuApi,
     window.stageApi,
