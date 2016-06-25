@@ -9,12 +9,16 @@
      * Private Variables
      */
     var messageTimer = null;
+    var paused = false;
+    var battleLoop = null;
 
 
     /**
      * Public api
      */
     w.battleApi = {
+        "pause": pause,
+        "resume": resume,
         "normal": normalBattle,
         "boss": bossBattle
     };
@@ -23,6 +27,21 @@
     /**
      * Private methods
      */
+    function pause() {
+        paused = true;
+    }
+
+    function resume() {
+        paused = false;
+        battleLoop();
+    }
+
+    function setBattleLoop( loop ) {
+        if ( loop ) {
+            battleLoop = loop;
+        }
+    }
+
     function showMessage( content, callback, delay ) {
 
         message.render( content ).show();
@@ -86,7 +105,11 @@
         game.addPlayersToContainer( enemies, enemiesContainer );
         stage.add( enemiesContainer );
 
-        requestAnimationFrame(function gameLoop() {
+        var gameLoop = function gameLoop() {
+
+            if ( paused ) {
+                return;
+            }
 
             var currentPlayerState = null;
             var currentEnemyState = null;
@@ -205,7 +228,11 @@
         );
         var remainingMinions = boss.minions;
 
-        requestAnimationFrame(function gameLoop() {
+        var gameLoop = function gameLoop() {
+
+            if ( paused ) {
+                return;
+            }
 
             var totalPlayers = players.length;
             var currentPlayer = null;
