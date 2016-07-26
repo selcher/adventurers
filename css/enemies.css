@@ -1,4 +1,9 @@
 /* Enemies */
+.player-avatar .avatar.enemy {
+    top: initial;
+    bottom: 20px;
+    left: 38%;
+}
 
 /* Status */
 .player-avatar .avatar.enemy.regen {
@@ -7,66 +12,80 @@
 
 /* Poring Field */
 .Poring.avatar {
-    background-image: url("../assets/enemy/poring.gif");
-    background-size: 41px 39px;
-    background-position: 50% 80%;
+    width: 50px;
+    height: 50px;
+    background-image: url("../assets/enemy/poring.png");
+    background-position: 0 0;
 }
 
 .Drops.avatar {
-    background-image: url("../assets/enemy/drops.gif");
-    background-size: 40px 38px;
-    background-position: 50% 80%;
+    width: 50px;
+    height: 50px;
+    background-image: url("../assets/enemy/drops.png");
+    background-position: -8px -8px;
 }
 
 .Poporing.avatar {
-    background-image: url("../assets/enemy/poporing.gif");
-    background-size: 41px 39px;
-    background-position: 50% 80%;
+    width: 50px;
+    height: 50px;
+    background-image: url("../assets/enemy/poporing.png");
+    background-position: -6px -2px;
 }
 
 .Marine.avatar {
-    background-image: url("../assets/enemy/marine.gif");
-    background-size: 47px 46px;
-    background-position: 50% 80%;
+    width: 50px;
+    height: 50px;
+    background-image: url("../assets/enemy/marin.png");
+    background-position: -2px 0;
 }
 
 /* Poring Field - Boss */
 .Poring_King.avatar {
-    background-image: url("../assets/enemy/poring_king.gif");
-    background-position: 50% 50%;
-    background-size: 130px 130px;
+    left: 22%;
+    width: 100px;
+    height: 100px;
+    background-image: url("../assets/enemy/poring_king.png");
+    background-size: 1000px;
+    background-position: -12px -10px;
     background-repeat: no-repeat;
 }
 
 /* Poring Field 2 */
 .Fabre.avatar {
-    background-image: url("../assets/enemy/fabre.gif");
-    background-size: 36px 29px;
-    background-position: 50% 80%;
+    width: 50px;
+    height: 50px;
+    background-image: url("../assets/enemy/fabre.png");
+    background-position: 0 10px;
 }
 
 .Lunatic.avatar {
-    background-image: url("../assets/enemy/lunatic.gif");
-    background-size: 35px 28px;
-    background-position: 50% 80%;
+    width: 50px;
+    height: 50px;
+    background-image: url("../assets/enemy/lunatic.png");
+    background-position: -174px 0;
 }
 
 .Rodra.avatar {
-    background-image: url("../assets/enemy/rodra.gif");
-    background-size: 46px 55px;
-    background-position: 50% 78%;
+    left: 36%;
+    width: 55px;
+    height: 55px;
+    background-image: url("../assets/enemy/roda.png");
+    background-position: -18px -18px;
 }
 
 .Rocker.avatar {
-    background-image: url("../assets/enemy/rocker.gif");
-    background-size: 51px 95px;
-    background-position: 50% 50%;
+    left: 30%;
+    width: 70px;
+    height: 110px;
+    background-image: url("../assets/enemy/rocker.png");
+    background-position: -12px -14px;
 }
 
 /* Poring Field 2 - Boss */
 .Eclipse.avatar {
-    background-image: url("../assets/enemy/eclipse.gif");
-    background-position: 50% 50%;
-    background-size: 130px 130px;
+    width: 50px;
+    height: 50px;
+    background-image: url("../assets/enemy/eclipse.png");
+    background-position: -4px 0;
     background-repeat: no-repeat;
 }
