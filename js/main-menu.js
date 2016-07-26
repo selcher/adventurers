@@ -97,8 +97,9 @@
     }
 
     function hideResetSavedGameMessage() {
-        message.hide();
-        message.reset();
+        message.hide(function() {
+            message.reset();
+        });
     }
 
     function startNewGame() {
@@ -128,6 +129,7 @@
 
         hide();
         gameContent.show();
+        controls.show();
         controls.clickMap();
     }
 
