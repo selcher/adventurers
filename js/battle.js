@@ -33,7 +33,7 @@
 
     function resume() {
         paused = false;
-        battleLoop();
+        requestAnimationFrame( battleLoop );
     }
 
     function setBattleLoop( loop ) {
@@ -51,8 +51,7 @@
         }
 
         messageTimer = setTimeout( function() {
-            callback && callback();
-            message.hide();
+            message.hide( callback );
         }, delay );
     }
 
@@ -195,19 +194,14 @@
         };
 
         setBattleLoop( gameLoop );
-        requestAnimationFrame( gameLoop );
 
         message.setType( "battle" );
         showMessage(
             locationData.name,
             function() {
-                resume();
+                requestAnimationFrame( gameLoop );
             },
             3000 );
-
-        setTimeout(function() {
-            pause();
-        });
     }
 
     function bossBattle( players, locationData, battleDone ) {
@@ -390,19 +384,14 @@
         };
 
         setBattleLoop( gameLoop );
-        requestAnimationFrame( gameLoop );
 
         message.setType( "battle" );
         showMessage(
             locationData.name,
             function() {
-                resume();
+                requestAnimationFrame( gameLoop );
             },
             3000 );
-
-        setTimeout(function() {
-            pause();
-        });
     }
 
 })( window,
