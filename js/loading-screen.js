@@ -31,7 +31,26 @@
         return this;
     }
 
+    var progressBar = null;
+    var progressBarWidth = 0;
+    var progressIcon = null;
+    var progressIconWidth = 0;
+
     function render( progress, label ) {
+
+        if ( progressBar ) {
+
+            progressBar.style.cssText += getProgressBarStyle( progress );
+            progressIcon.style.cssText += getProgressIconStyle( progress );
+
+        } else {
+
+            initialRender( progress, label );
+
+        }
+    }
+
+    function initialRender( progress, label ) {
 
         renderContent( container,
             [
@@ -40,15 +59,33 @@
                 '</div>',
                 '<div class="loading-progress">',
                     '<div class="progress-bar-start"></div>',
-                    '<div class="progress-bar" style="width:' + progress + '%;">',
-                        '<div class="progress-icon"></div>',
-                    '</div>',
+                    '<div class="progress-bar" style="' + getProgressBarStyle( progress ) + '"></div>',
+                    '<div class="progress-icon" style="' + getProgressIconStyle( progress ) + '"></div>',
                     '<div class="progress-bar-end"></div>',
                 '</div>',
             ].join( "" )
         );
 
+        progressBar = container.querySelector( ".progress-bar" );
+        progressBarWidth = progressBar.getBoundingClientRect().width;
+        progressIcon = container.querySelector( ".progress-icon" );
+        progressIconWidth = progressIcon.getBoundingClientRect().width;
+
         return this;
+    }
+
+    function getProgressBarStyle( progress ) {
+        var transform = "transform:scaleX(" + progress + ");";
+
+        return transform + "-webkit-" + transform;
+    }
+
+    function getProgressIconStyle( progress ) {
+
+        var x = (progress * progressBarWidth) - progressIconWidth;
+        var transform = "transform:translateX(" + x + "px) scaleX(-1);";
+
+        return transform + "-webkit-" + transform;
     }
 
     function show() {
@@ -56,7 +93,9 @@
     }
 
     function hide() {
+
         container.classList.add( "fade" );
+
         setTimeout( function() {
             container.classList.add( "hide" );
             container.classList.remove( "fade" );
