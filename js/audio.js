@@ -27,6 +27,7 @@
             "src": dir + "05. Tread On The Ground.mp3"
         }
     };
+    var bgm = null;
 
 
     /**
@@ -66,17 +67,70 @@
         audioPlayerSrc = doc.querySelector( ".audio-src" );
     }
 
+    function getPath() {
+
+        var path = "";
+        var platform = device ? device.platform : "";
+
+        if ( platform.toLowerCase() === "android" ) {
+
+            path = "file:///android_asset/www/";
+
+        } else {
+
+            var str = location.pathname;
+            var i = str.lastIndexOf( "/" );
+
+            path = str.substring( 0, i + 1 );
+
+        }
+
+        return path;
+    }
+
     function play( id ) {
 
-        audioPlayerSrc.src = registry[ id ].src;
-        audioPlayer.loop = true;
-        audioPlayer.load();
-        audioPlayer.play();
-        audioPlayer.volume = 0.5;
+        if ( typeof Media !== "undefined" ) {
+
+            if ( bgm ) {
+                pause();
+            }
+
+            // Mobile
+            var bgmPath = getPath() + registry[ id ].src;
+            bgm = new Media( bgmPath, function onSuccess() {
+                // audio played
+            });
+            bgm.play();
+
+        } else {
+
+            if ( !audioPlayer.paused ) {
+                pause();
+            }
+
+            // Web
+            audioPlayerSrc.src = registry[ id ].src;
+            audioPlayer.loop = true;
+            audioPlayer.load();
+            audioPlayer.play();
+            audioPlayer.volume = 0.5;
+
+        }
     }
 
     function pause() {
-        audioPlayer.pause();
+
+        if ( typeof Media !== "undefined" ) {
+
+            bgm.pause();
+            bgm = null;
+
+        } else {
+
+            audioPlayer.pause();
+
+        }
     }
 
 })( window, document );
