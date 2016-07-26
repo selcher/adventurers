@@ -37,10 +37,10 @@
         var loadProgress = progressEvent.loaded;
 
         if ( loadProgress === 1 ) {
-            loadingScreenApi.render( 100, "" );
+            loadingScreenApi.render( 1, "" );
             loadingScreenApi.hide();
         } else {
-            loadingScreenApi.render( Math.round( loadProgress * 100 ), "" );
+            loadingScreenApi.render( Math.round( loadProgress ), "" );
         }
     }
 
@@ -92,7 +92,7 @@
 
             // Bottom menu
             var controls = doc.querySelector(".controls");
-            controlsApi.init( controls ).render().show();
+            controlsApi.init( controls ).render().hide();
 
             // Main Menu
             var mainMenu = doc.querySelector( ".main-menu" );
@@ -113,12 +113,18 @@
             audioApi.init( audio ).render();
             audioApi.play( "title" );
 
-            // Save Game Data on page close / refresh
-            w.addEventListener( "beforeunload", function( e ) {
+            // Save Game Data on app close
+            var saveGameOnClose = function( e ) {
                 if ( dataApi.isAutoSaveEnabled() ) {
                     dataApi.saveData( gameApi.getData() );
                 }
-            }, false );
+            };
+
+            // Web
+            w.addEventListener( "beforeunload", saveGameOnClose, false );
+
+            // Mobile
+            doc.addEventListener( "pause", saveGameOnClose, false );
         });
     }
 
