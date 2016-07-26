@@ -67,32 +67,42 @@
         }
     }
 
-    function show() {
+    function show(callback) {
 
-        container.classList.add( "slideIn" );
-        container.classList.remove( "hide" );
+        requestAnimationFrame(function() {
+            container.classList.add( "slideIn" );
+            container.classList.remove( "hide" );
 
-        if ( timer ) {
-            clearTimeout( timer );
-        }
+            if ( timer ) {
+                clearTimeout( timer );
+            }
 
-        timer = setTimeout( function() {
-            container.classList.remove( "slideIn" );
-        }, 200 );
+            timer = setTimeout( function() {
+                requestAnimationFrame(function() {
+                    container.classList.remove( "slideIn" );
+                    callback && callback();
+                });
+            }, 200 );
+        });
     }
 
-    function hide() {
+    function hide(callback) {
 
-        container.classList.add( "slideOut" );
+        requestAnimationFrame(function() {
+            container.classList.add( "slideOut" );
 
-        if ( timer ) {
-            clearTimeout( timer );
-        }
+            if ( timer ) {
+                clearTimeout( timer );
+            }
 
-        timer = setTimeout( function() {
-            container.classList.add( "hide" );
-            container.classList.remove( "slideOut" );
-        }, 200 );
+            timer = setTimeout( function() {
+                requestAnimationFrame(function() {
+                    container.classList.add( "hide" );
+                    container.classList.remove( "slideOut" );
+                    callback && callback();
+                });
+            }, 200 );
+        });
     }
 
     function render( message ) {
@@ -105,6 +115,7 @@
             '</div>'
         ].join( "" );
 
+        container.className = "message " + type;
         container.innerHTML = content;
 
         return this;
