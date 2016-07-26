@@ -20,3 +20,12 @@
     - skill cast time
     - activated skill list
     - status effects (partial)
+
+#### 1.1.1
+- Patch:
+    - message animation improvement
+    - loading screen animation improvement
+    - player render improvement
+    - enemy render improvement
+    - audio play on mobile
+    - game save on mobile
