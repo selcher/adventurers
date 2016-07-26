@@ -13,6 +13,7 @@
         this.prevAvatarStatus = [];
 
         this.hpDOM = null;
+        this.currentHpDOM = null;
         this.statusIconsDOM = null;
         this.avatarDOM = null;
         this.avatarPlayerDOM = null;
@@ -51,6 +52,7 @@
         this.prevAvatarStatus = utils.getKeys( player.status );
 
         this.hpDOM = this.dom.querySelector( ".hp" );
+        this.currentHpDOM = this.hpDOM.querySelector( ".current" );
         this.statusIconsDOM = this.dom.querySelector( ".status-icon-container" );
         this.avatarDOM = this.dom.querySelector( ".avatar-container" );
         this.avatarPlayerDOM = this.dom.querySelector( "." + player.name + ".avatar" );
@@ -58,18 +60,32 @@
 
     PlayerRender.prototype.render = function render( player ) {
         var playerState = player.state;
+        var transform = "";
 
         if ( this.prevState !== playerState ) {
             this.hpDOM.className = "hp " + playerState;
             this.avatarPlayerDOM.className = player.name + " avatar " + playerState;
         }
+
         if ( isAvatarAnimationActive( playerState ) ) {
-            this.avatarPlayerDOM.style.cssText += getAvatarAnimationStyle(
+            transform = getAvatarAnimationStyle(
                 playerState, player.atkSpeed, player.atkSpeedCounter );
+
+            if ( transform ) {
+                this.avatarPlayerDOM.style.cssText += transform;
+            }
+        } else if ( playerState === "attack" || playerState === "dead" ) {
+
+            transform = "transform:translate3d(0,0,0);";
+            this.avatarPlayerDOM.style.cssText += transform + "-webkit-" + transform;
         }
 
         if ( this.prevHp !== player.hp ) {
-            this.hpDOM.innerHTML = renderHpBar( player.hp, player.maxHp );
+            var currentHp = getHpAmount( player.hp, player.maxHp );
+            this.currentHpDOM.className = "current " + getHpStatus( currentHp );
+
+            transform = getHpStyle( currentHp );
+            this.currentHpDOM.style.cssText += transform;
         }
 
         if ( this.prevAvatarStatus.length !== utils.getKeys( player.status ).length ) {
@@ -109,19 +125,27 @@
         return result;
     }
 
-    function renderHp( state, hp, maxHp ) {
-        var result = '<div class="hp ' + state  + '">' +
-            renderHpBar( hp, maxHp ) +
-        '</div>';
-
-        return result;
+    function getHpStatus( hp ) {
+        return hp < 0.25 ? "low" : "";
     }
 
-    function renderHpBar( hp, maxHp ) {
-        var currentHp = ( hp / maxHp ) * 100;
-        var amount = currentHp < 25 ? "low": "";
-        var result = '<div class="current ' + amount + '" style="width:' + currentHp + '%;"></div>' +
-            '<div class="max"></div>';
+    function getHpAmount( hp, maxHp ) {
+        return ( hp / maxHp );
+    }
+
+    function getHpStyle( hp ) {
+        var transform = "transform:scaleX(" + hp + ");";
+
+        return transform + "-webkit-" + transform;
+    }
+
+    function renderHp( state, hp, maxHp ) {
+        var currentHp = getHpAmount( hp, maxHp );
+        var status = getHpStyle( currentHp );
+        var result = '<div class="hp ' + state + '">' +
+            '<div class="current ' + status + '" style="' + currentHp + '"></div>' +
+            '<div class="max"></div>' +
+        '</div>';
 
         return result;
     }
@@ -150,9 +174,13 @@
         if ( state === "attacking" ) {
             var maxMoveDistance = 20;
             var x = atkSpeedCounter / (atkSpeed / 2);
+            var transform = "";
 
             x = x < 1 ? x * maxMoveDistance : (2 - x) * maxMoveDistance;
-            animationStyle += "-webkit-transform: translateX(" + x + "px);";
+            transform = "transform:translate3d(" + x + "px, 0, 0);";
+            transform = transform + "-webkit-" + transform;
+
+            animationStyle += transform;
         }
 
         return animationStyle;
