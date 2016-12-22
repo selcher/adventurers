@@ -1,7 +1,9 @@
 # adventurers
 A beginner's implementation of the free auto rpg mobile game
 
-Features:
+[Demo](https://selcher.github.io/adventurers/)
+
+#### Features:
 - auto battle
     - normal
     - boss
@@ -10,11 +12,11 @@ Features:
 - skill
 - bg music
 
-Planned Features:
+#### Planned Features:
 - shop (unlock)
 - items
 - quests / achievements
 
-Release:
+#### Release:
 - web
 - mobile
