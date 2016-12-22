@@ -20,6 +20,8 @@
 .main-menu .main-menu-label .header {
     margin: auto auto 0 auto;
     letter-spacing: 2px;
+    color: #FFFFFF;
+    -webkit-text-stroke: 2px #456DB5;
 }
 
 .main-menu .main-menu-label .sub-header {
