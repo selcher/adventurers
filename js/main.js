@@ -1,5 +1,6 @@
 (function( w,
     doc,
+    nav,
     utils,
     createjsApi,
     loadingScreenApi,
@@ -20,6 +21,7 @@
 
         initLoadingScreen();
         initPreloading();
+        initServiceWorker();
     }
 
 
@@ -128,11 +130,29 @@
         });
     }
 
+    function initServiceWorker() {
+
+        // Register Service Worker
+        if ('serviceWorker' in nav) {
+
+            // Path is relative to the origin
+            nav.serviceWorker.register('../sw.js').then(
+                function(reg) {
+                    // Service worker registered
+                }
+            ).catch(
+                function(error) {
+                    // Service worker registration failed
+                }
+            );
+        }
+    }
 
     init();
 
 })( window,
     document,
+    navigator,
     window.utilsApi,
     window.createjs,
     window.loadingScreenApi,
