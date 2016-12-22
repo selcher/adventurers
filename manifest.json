@@ -1,0 +1,17 @@
+{
+    "short_name": "Adventurers",
+    "name": "Adventurers AutoRPG",
+    "description": "Adventurers: An Auto RPG",
+    "icons": [
+        {
+            "src": "/icons/android-chrome-96x96.png",
+            "sizes": "96x96",
+            "type": "image/png"
+        }
+    ],
+    "start_url": "/index.html",
+    "display": "standalone",
+    "orientation": "portrait",
+    "theme_color": "#1565C0",
+    "background_color": "#000000"
+}

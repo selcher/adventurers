@@ -9,10 +9,25 @@
         <meta http-equiv="Content-Security-Policy"
         content="img-src 'self' data: blob:; default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
 
+        <!-- Meta tag for app-like behaviour in iOS -->
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="theme-color" content="#1565C0">
+
         <title>Adventurers</title>
 
+        <!-- Icons -->
         <link rel="icon" href="img/favicon.png">
+        <link rel="apple-touch-icon" sizes="120x120"
+            href="img/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32"
+            href="img/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16"
+            href="img/favicon-16x16.png">
+        <link rel="mask-icon" color="#5bbad5"
+            href="img/safari-pinned-tab.svg">
 
+        <!-- Styles -->
         <link type="text/css" rel="stylesheet" href="css/styles.css">
         <link type="text/css" rel="stylesheet" href="css/container.css">
         <link type="text/css" rel="stylesheet" href="css/loading-screen.css">
@@ -28,6 +43,9 @@
         <link type="text/css" rel="stylesheet" href="css/players.css">
         <link type="text/css" rel="stylesheet" href="css/players-status.css">
         <link type="text/css" rel="stylesheet" href="css/enemies.css">
+
+        <!-- Web Manifest -->
+        <link rel="manifest" href="/manifest.json">
 
     </head>
 
