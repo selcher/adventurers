@@ -29,3 +29,8 @@
     - enemy render improvement
     - audio play on mobile
     - game save on mobile
+
+#### 1.2.0
+- Feature:
+    - Mobile: Add To Home Screen
+    - Offline availability (service worker)
